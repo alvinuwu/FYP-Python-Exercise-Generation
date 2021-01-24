@@ -1,0 +1,76 @@
+﻿@model List<OEQuestions>
+@{
+    ViewBag.Title = "Exercise Papers";
+}
+
+<html>
+<head>
+
+</head>
+<body>
+    <div id="tab" class="tab-pane">
+        <div class="panel-body">
+            <div style="padding: 20px">
+                <h2>Exercise Paper List</h2>
+                <br />
+                <br />
+                @if (TempData["Msg"] != null)
+                {
+                    <div class="form-group row">
+                        <div class="col">
+                            <div class="alert alert-@TempData["MsgType"]">
+                                <text><b>@Html.Raw(TempData["Msg"])</b></text>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <table id="exercisePaperTable" class="table table-bordered table-condensed table-hover table-striped">
+                    <tr style="background-color:darkblue">
+                        <th scope="col" width="2%" style="color:white">#</th>
+                        <th scope="col" width="30%" style="color:white">Topic</th>
+                        <th scope="col" width="20%" style="color:white">Figure</th>
+                        <th scope="col" width="10%" style="color:white">Question</th>
+                        <th scope="col" width="10%" style="color:white">Answer</th>
+                        <th scope="col" width="10%" style="color:white"><p align="center">Action</p></th>
+                    </tr>
+
+                    @if (Model != null)
+                    {
+                        int count = 1;
+                        @foreach (var item in Model)
+                        {
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @item.TopicId
+                    </td>
+                    <td>
+                        @item.Figure
+                    </td>
+                    <td>
+                        @item.Question
+                    </td>
+                    <td>
+                        @item.Answer
+                    </td>
+                    <td align="center">
+                        <button style="background-color:dodgerblue">
+                            <a asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" asp-route-id="@item.ExercisePaperId" style="color:white"><b>Start Paper</b></a>
+                        </button>
+                    </td>
+                </tr>
+                            count++;
+                        }
+                    }
+                </table>
+                <br /><br /><br />
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+</style>

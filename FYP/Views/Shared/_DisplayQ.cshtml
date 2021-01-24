@@ -1,0 +1,27 @@
+﻿<pre class="calibriFont">
+    @{
+        var question = Model;
+        if (question.Contains("[comma]"))
+        {
+            question.Replace("[comma]", ",");
+        }
+        if (question.Contains("[nline]"))
+        {
+            var split = question.Split("[nline]");
+            int counter = 0;
+            foreach (var i in split)
+            {
+                @split[counter]
+                counter++;
+            }
+        }
+        else
+        {
+            @question
+        }
+    }
+</pre>
+@{
+    var questionString = Model;
+}
+<input value="@questionString" name="question" class="form-control" hidden />

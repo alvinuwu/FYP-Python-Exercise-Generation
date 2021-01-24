@@ -1,0 +1,122 @@
+﻿@model AutoGenerateQn
+    <html>
+    <head>
+
+    </head>
+    <body>
+        <div id="tab" class="tab-pane">
+            <div class="panel-body">
+                <div style="padding: 20px">
+
+                    @{
+                        ViewBag.Title = "Auto Generate Open-Ended Question";
+                    }
+
+                    <h2>@ViewData["Title"]</h2>
+                    <br />
+                    <br />
+                    <div class="container">
+                        <div class="col-10">
+                            
+                                <div class="form-horizontal">
+                                    <div class="form-group row">
+                                        <label class="control-label col-2 text-left"><b>Topic : </b></label>
+                                        <div class="col-6">
+                                            <select asp-for="Topics" id="topics" class="form-control col-6" style="width: 100%; height: 100px; font-family: 'HP Simplified'"
+                                                    asp-items="@((SelectList)ViewData["topics"])">
+                                            </select>
+                                            @Html.ValidationMessageFor(d => d.Topics, null, new { @class = "text-danger" })
+                                        </div>
+                                        <br />
+                                        <br />
+                                        @*<label class="control-label col-5 text-right"><b>Maximum Usage for Question : </b></label>
+                                        <div class="col-6">
+                                            <input type="number" asp-for="UseCount" class="form-control" />
+                                        </div>*@
+                                        <br />
+                                        <br />
+
+                                        @*<label class="control-label col-2 text-right"></label>
+                                        <div class="col-6">
+                                            <button type="button" style="color:black" id="generateQ">Display Questions</button>
+                                        </div>*@
+
+                                        <br />
+                                        <br />
+                                        <hr />
+                                        <br />
+
+                                        <hr />
+
+                                    </div>
+
+                                </div>
+                            
+                            <div class="col-13">
+
+                                <table class="table table-bordered table-condensed table-hover table-striped">
+                                    <thead>
+                                        <tr style="background-color:darkblue">
+                                            <th scope="col" width="2%" style="color:white">#</th>
+                                            <th scope="col" width="30%" style="color:white">Figure</th>
+                                            <th scope="col" width="20%" style="color:white">Question</th>
+                                            <th scope="col" width="20%" style="color:white">Answer</th>
+                                            <th scope="col" width="5%" style="color:white">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="divQuestion">
+                                        @*AJAX*@
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="form-group row">
+                                @*<label class="control-label col-5 text-right"></label>
+                                <div class="col-8">
+                                    <input style="background-color:dodgerblue; color:white" type="submit" value="Confirm" class="btn btn-default" />
+                                    <a class="btn btn-default" style="background-color: lightgray; color: black" asp-action="Index" asp-controller="Home">Cancel</a>
+                                </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+
+
+    $(document).ready(function () {
+
+
+
+        $("#topics").change(ajaxLoadQuestion);
+    });
+
+
+
+    function ajaxLoadQuestion() {
+        var topic = $("#topics").val();
+        var apiUrl = "/api/OEQuestion/" + topic;
+        var divQuestion = $("#divQuestion");
+
+        var linkString1 = '<a href="/ExercisePaper/AutoGenerateQnPt2/?id=';
+        var linkString2 = '" style="color: black"><b>Select</b></a>';
+
+        divQuestion.html("");
+
+        $.getJSON(apiUrl, function (result) {
+            $.each(result, function (i, question) {
+                divQuestion.append(
+                    "<tr><td>" + (i + 1) +
+                    "</td><td>" + question.figure +
+                    "</td><td>" + question.question +
+                    "</td><td>" + question.answer +
+                    "</td><td>" + "<button>" + linkString1 + question.id + "&topicId=" + question.topicId + linkString2 + "</button>" +
+                    "</td></tr>"
+                );
+            });
+        });
+    }
+</script>

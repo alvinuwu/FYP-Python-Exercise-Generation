@@ -1,0 +1,36 @@
+﻿
+
+<pre>
+    @{
+        var figure = Model;
+        if (figure.Contains("[comma]"))
+        {
+            figure.Replace("[comma]", ",");
+        }
+        if (figure.Contains("[nline]"))
+        {
+            var split = figure.Split("[nline]");
+            int counter = 0;
+            foreach (var i in split)
+            {
+                @split[counter]<br />
+
+
+
+                counter++;
+            }
+        }
+        else
+        {
+            @figure<br />
+
+
+
+        }
+    }
+</pre>
+
+@{
+    var figureString = Model;
+}
+<input value="@figureString" name="figure" class="form-control" hidden />

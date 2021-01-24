@@ -1,0 +1,173 @@
+﻿@model OEQuestion_Templates
+<html>
+<head>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script>
+        $.ajaxSetup({ cache: false });
+    </script>
+</head>
+<body>
+    <div id="tab" class="tab-pane">
+        <div class="panel-body">
+            <div style="padding: 20px">
+
+                @{
+                    ViewBag.Title = "Auto Generate Open-Ended Question";
+                }
+
+                <h2>@ViewData["Title"]</h2>
+                <hr class="line" />
+                <br />
+                <label class="control-label col-2 text-right"></label>
+                <div class="col-6">
+                    <button type="button" style="color:black" id="randomise">Randomise</button>
+                    <button type="button" style="color:black" id="buttonTest">button Test</button>
+                </div>
+                <form asp-controller="ExercisePaper" asp-action="AutoGenerateQnPt2" method="post" class="form-horizontal" role="form">
+                    <br />
+                    <hr />
+                    <div id="displayQn" class="col-12">
+                        <b>Figure</b>:<br />
+                        <div class="offset-1 col-6 calibriFont" id="figure">
+                            <pre>
+                                    @{
+                                        var figure = Model.Figure;
+                                        if (figure.Contains("[comma]"))
+                                        {
+                                            figure.Replace("[comma]", ",");
+                                        }
+                                        if (figure.Contains("[nline]"))
+                                        {
+                                            var split = figure.Split("[nline]");
+                                            int counter = 0;
+                                            foreach (var i in split)
+                                            {
+                                                @split[counter]<br />
+                                                counter++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @figure<br />
+                                        }
+                                    }
+                                </pre>
+                            @{ 
+                                var figureString = Model.Figure;
+                            }
+                            <input value="@figureString" name="figure" class="form-control" hidden />
+                        </div>
+                        <hr />
+                        <b>Question</b>:<br />
+                        <div class="offset-1 col-6" id="question">
+                            <pre class="calibriFont">
+                            @{
+                                var question = Model.Question;
+                                if (question.Contains("[comma]"))
+                                {
+                                    question.Replace("[comma]", ",");
+                                }
+                                if (question.Contains("[nline]"))
+                                {
+                                    var split = question.Split("[nline]");
+                                    int counter = 0;
+                                    foreach (var i in split)
+                                    {
+                                        @split[counter]
+                                        counter++;
+                                    }
+                                }
+                                else
+                                {
+                                    @question
+                                }
+                            }
+                            @{ 
+                                var questionString = Model.Question;
+                            }
+                            </pre>
+                            <input value="@questionString" name="question" class="form-control" hidden />
+                        </div>
+                        <br />
+                        <hr />
+                        <b>Answer</b>:<br />
+                        <div class="offset-1 col-6 calibriFont" id="answer" >
+                            @Model.Answer
+                            @{
+                                var answerString = Model.Answer;
+                            }
+                            <input value="@answerString" name="answer" class="form-control" hidden />
+                        </div>
+                        <br /><br />
+                    </div>
+                    <br />
+                    <br />
+
+                    <label class="control-label col-5 text-left"><b>Maximum Usage for Question : </b></label>
+                    <div class="col-3">
+                        <input type="number" id="useCount" name="useCount" class="form-control" />
+                    </div>
+                    <br />
+                    <br />
+
+                    <div class="col-8">
+                        <input style="background-color:dodgerblue; color:white" type="submit" value="Add Question" class="btn btn-default" />
+                        <a class="btn btn-default" style="background-color: lightgray; color: black" asp-action="AutoGenerateQn" asp-controller="ExercisePaper">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<style>
+    hr.line {
+        border-top: 2px solid black;
+        margin-top: 0px;
+    }
+    .calibriFont {
+        font-family: 'Calibri';
+        font-size: 18px
+    }
+</style>
+<script>
+
+            function LoadFigure(id, rand) {
+                $("#figure").html("");
+                var url = "/ExercisePaper/RandomiseOEF?id=" + id + "&rand=" + rand;
+                $("#figure").load(url);
+            }
+
+            function LoadQuestion(id, rand) {
+                $("#question").html("");
+                var url = "/ExercisePaper/RandomiseOEQ?id=" + id + "&rand=" + rand;
+                $("#question").load(url);
+            }
+
+            function LoadAnswer(id, rand) {
+                $("#answer").html("");
+                var url = "/ExercisePaper/RandomiseOEA?id=" + id + "&rand=" + rand;
+                $("#answer").load(url);
+            }
+
+
+    $(document).ready(function () {
+
+        $("#buttonTest").click(function () {
+            var aStr = $("#answerString").val();
+            var qStr = $("#answerString").val();
+            var ftr = $("#answerString").val();
+        });
+
+        $("#randomise").click(function () {
+            var totalVar = @Model.QuestionVar.Split(",").Count();
+            var randVal = Math.floor((Math.random() * totalVar));
+
+            LoadFigure(@Model.Id, randVal);
+            LoadQuestion(@Model.Id, randVal);
+            LoadAnswer(@Model.Id, randVal);
+        });
+
+    });
+
+</script>
