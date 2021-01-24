@@ -64,6 +64,9 @@ namespace FYP.Controllers
         public IActionResult AutoGenerateQnPt2(IFormCollection form)
         {
             var topicId = Int32.Parse(TempData["Topic"].ToString());
+            DbSet<Topics> dbTopic = _dbContext.Topics;
+            var topic = dbTopic.Where(c => c.Id == topicId).FirstOrDefault().ToString();
+
             var figure = form["figure"];
             var question = form["question"];
             var answer = form["answer"];
@@ -78,7 +81,7 @@ namespace FYP.Controllers
             oeQuestions.Figure = figure;
             oeQuestions.Question = question;
             oeQuestions.Answer = answer;
-            oeQuestions.TopicId = topicId;
+            oeQuestions.Topic = topic;
             if (useCount != 0)
             {
                 oeQuestions.UseCount = useCount;
@@ -165,9 +168,7 @@ namespace FYP.Controllers
             DbSet<OEQuestions> oeQ = _dbContext.OEQuestions;
             List<OEQuestions> oeList = oeQ.ToList();
 
-            
-
-            return View();
+            return View(oeList);
         }
 
         [Authorize]
@@ -601,13 +602,15 @@ namespace FYP.Controllers
                         var questionFinal = questionSplit[variant_num];                    //Question based on random
                         var answerFinal = answerSplit[variant_num];                        //Answer based on random
                         int topicId = item;                                                //Topic
+                        DbSet<Topics> dbTopic = _dbContext.Topics;
+                        var topic = dbTopic.Where(c => c.Id == topicId).FirstOrDefault().ToString();
 
                         //Insert values into type of OEQuestions
                         OEQuestions oeQ = new OEQuestions();                               //Type OEQuestions to store data of the same type
                         oeQ.Figure = figureFinal;
                         oeQ.Question = questionFinal;
                         oeQ.Answer = answerFinal;
-                        oeQ.TopicId = topicId;
+                        oeQ.Topic = topic;
 
                         //Insert into db
                         _dbContext.OEQuestions.Add(oeQ);
@@ -700,7 +703,7 @@ namespace FYP.Controllers
                         oeQ.Question = x.Question;
                         oeQ.Figure = x.Figure;
                         oeQ.Answer = x.Answer;
-                        oeQ.TopicId = x.TopicId;
+                        oeQ.Topic = x.Topic;
                         model.Add(oeQ);
                     }
                 }
