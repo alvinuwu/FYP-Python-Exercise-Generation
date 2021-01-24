@@ -65,7 +65,7 @@ namespace FYP.Controllers
         {
             var topicId = Int32.Parse(TempData["Topic"].ToString());
             DbSet<Topics> dbTopic = _dbContext.Topics;
-            var topic = dbTopic.Where(c => c.Id == topicId).FirstOrDefault().ToString();
+            var topic = dbTopic.Where(c => c.Id == topicId).FirstOrDefault();
 
             var figure = form["figure"];
             var question = form["question"];
@@ -81,7 +81,7 @@ namespace FYP.Controllers
             oeQuestions.Figure = figure;
             oeQuestions.Question = question;
             oeQuestions.Answer = answer;
-            oeQuestions.Topic = topic;
+            oeQuestions.Topic = topic.Name;
             if (useCount != 0)
             {
                 oeQuestions.UseCount = useCount;
@@ -169,6 +169,67 @@ namespace FYP.Controllers
             List<OEQuestions> oeList = oeQ.ToList();
 
             return View(oeList);
+        }
+
+        [Authorize]
+        public IActionResult EditOEQuestions(int id)
+        {
+            DbSet<OEQuestions> oeQ = _dbContext.OEQuestions;
+            OEQuestions oe = oeQ.Where(c => c.Id == id).FirstOrDefault();
+
+            return View(oe);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult EditOEQuestions(OEQuestions item)
+        {
+            DbSet<OEQuestions> oeQ = _dbContext.OEQuestions;
+            OEQuestions oe = oeQ.Where(c => c.Id == item.Id).FirstOrDefault();
+            oe.Id = item.Id;
+            oe.Figure = item.Figure;
+            oe.Question = item.Question;
+            oe.Answer = item.Answer;
+            oe.UseCount = item.UseCount;
+            oe.Topic = item.Topic;
+
+            if (_dbContext.SaveChanges() == 1)
+            {
+                TempData["Msg"] = "Open-Ended Question updated!";
+                TempData["MsgType"] = "success";
+            }
+            else
+            {
+                TempData["Msg"] = "Failed to update database!";
+            }
+
+            return RedirectToAction("ViewOEQuestions");
+        }
+
+        [Authorize]
+        public IActionResult DeleteOEQuestions(int id)
+        {
+            DbSet<OEQuestions> oeQ = _dbContext.OEQuestions;
+            OEQuestions oe = oeQ.Where(c => c.Id == id).FirstOrDefault();
+
+            if (oe != null)
+            {
+                oeQ.Remove(oe);
+                if (_dbContext.SaveChanges() == 1)
+                {
+                    TempData["Msg"] = "Open Ended Question deleted!";
+                    TempData["MsgType"] = "warning";
+                }
+                else
+                {
+                    TempData["Msg"] = "Failed to delete Question!";
+                }
+            }
+            else
+            {
+                TempData["Msg"] = "Question not found!";
+            }
+            return RedirectToAction("ViewOEQuestions");
         }
 
         [Authorize]

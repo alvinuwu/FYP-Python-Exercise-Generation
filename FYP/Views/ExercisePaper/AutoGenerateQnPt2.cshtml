@@ -21,7 +21,6 @@
                 <label class="control-label col-2 text-right"></label>
                 <div class="col-6">
                     <button type="button" style="color:black" id="randomise">Randomise</button>
-                    <button type="button" style="color:black" id="buttonTest">button Test</button>
                 </div>
                 <form asp-controller="ExercisePaper" asp-action="AutoGenerateQnPt2" method="post" class="form-horizontal" role="form">
                     <br />
@@ -59,8 +58,8 @@
                         </div>
                         <hr />
                         <b>Question</b>:<br />
-                        <div class="offset-1 col-6" id="question">
-                            <pre class="calibriFont">
+                        <div class="offset-1 col-6 calibriFont" id="question">
+                            
                             @{
                                 var question = Model.Question;
                                 if (question.Contains("[comma]"))
@@ -85,7 +84,7 @@
                             @{ 
                                 var questionString = Model.Question;
                             }
-                            </pre>
+                            
                             <input value="@questionString" name="question" class="form-control" hidden />
                         </div>
                         <br />
@@ -152,12 +151,6 @@
 
 
     $(document).ready(function () {
-
-        $("#buttonTest").click(function () {
-            var aStr = $("#answerString").val();
-            var qStr = $("#answerString").val();
-            var ftr = $("#answerString").val();
-        });
 
         $("#randomise").click(function () {
             var totalVar = @Model.QuestionVar.Split(",").Count();

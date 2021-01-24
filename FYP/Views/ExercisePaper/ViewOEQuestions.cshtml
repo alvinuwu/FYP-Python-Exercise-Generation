@@ -2,7 +2,8 @@
 @{
     ViewBag.Title = "Exercise Papers";
 }
-
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <html>
 <head>
 
@@ -11,7 +12,7 @@
     <div id="tab" class="tab-pane">
         <div class="panel-body">
             <div style="padding: 20px">
-                <h2>Exercise Paper List</h2>
+                <h2>Open-Ended Questions List</h2>
                 <br />
                 <br />
                 @if (TempData["Msg"] != null)
@@ -28,10 +29,11 @@
                     <tr style="background-color:darkblue">
                         <th scope="col" width="2%" style="color:white">#</th>
                         <th scope="col" width="5%" style="color:white">Topic</th>
-                        <th scope="col" width="20%" style="color:white">Figure</th>
-                        <th scope="col" width="10%" style="color:white">Question</th>
+                        <th scope="col" width="15%" style="color:white">Figure</th>
+                        <th scope="col" width="15%" style="color:white">Question</th>
                         <th scope="col" width="10%" style="color:white">Answer</th>
-                        <th scope="col" width="10%" style="color:white"><p align="center">Action</p></th>
+                        <th scope="col" width="3%" style="color:white">Max. Use</th>
+                        <th scope="col" width="7%" style="color:white"><p align="center">Action</p></th>
                     </tr>
 
                     @if (Model != null)
@@ -39,27 +41,39 @@
                         int count = 1;
                         @foreach (var item in Model)
                         {
-                <tr>
-                    <td>
-                        @count
-                    </td>
-                    <td>
-                        @item.Topic
-                    </td>
-                    <td>
-                        @item.Figure
-                    </td>
-                    <td>
-                        @item.Question
-                    </td>
-                    <td>
-                        @item.Answer
-                    </td>
-                    <td align="center">
-                        <button style="background-color:darkseagreen; color:white" asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" asp-route-id=""><b>Edit</b></button>
-                        <button style="background-color:salmon; color:white" asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" asp-route-id=""><b>Delete</b></button>
-                    </td>
-                </tr>
+                            <tr>
+                                <td>
+                                    @count
+                                </td>
+                                <td>
+                                    @item.Topic
+                                </td>
+                                <td>
+                                    @item.Figure
+                                </td>
+                                <td>
+                                    @item.Question
+                                </td>
+                                <td>
+                                    @item.Answer
+                                </td>
+                                <td align="center">
+                                    @{
+                                        if (item.UseCount == null)
+                                        {
+                                            <text><b style="font-size: 20px">&infin;</b></text>
+                                        }
+                                        else
+                                        {
+                                            <text>@item.UseCount</text>
+                                        }
+                                    }
+                                </td>
+                                <td align="center">
+                                    <a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" asp-controller="ExercisePaper" asp-action="EditOEQuestions" asp-route-id="@item.Id">&#9998;</a>
+                                    <a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" asp-controller="ExercisePaper" asp-action="DeleteOEQuestions" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
                             count++;
                         }
                     }
@@ -73,3 +87,13 @@
 
 <style>
 </style>
+
+<script>
+    function ConfirmDelete() {
+        if (confirm("Are you sure you want to delete?") == false) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        }
+    }
+</script>
