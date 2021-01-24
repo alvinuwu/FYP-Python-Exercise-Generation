@@ -94,7 +94,7 @@ namespace FYP.Controllers
             TempData["Msg"] = "New Open-Ended Question added!";
             TempData["MsgType"] = "success";
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewOEQuestions");
         }
 
         public IActionResult RandomiseOEF(int id, int rand)
@@ -163,10 +163,11 @@ namespace FYP.Controllers
         public IActionResult ViewOEQuestions()
         {
             DbSet<OEQuestions> oeQ = _dbContext.OEQuestions;
-            List<OEQuestions> model = oeQ.ToList();
+            List<OEQuestions> oeList = oeQ.ToList();
 
+            
 
-            return View(model);
+            return View();
         }
 
         [Authorize]
