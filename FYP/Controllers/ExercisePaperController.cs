@@ -698,7 +698,7 @@ namespace FYP.Controllers
                         DbSet<OEQuestionsPaper> oeQuestions = _dbContext.OEQuestionsPaper;
                         List<OEQuestionsPaper> oeQuestionsList = oeQuestions.ToList();
 
-                        var oeCount = oeQuestionsList.Count();
+                        var oeCount = oeQuestionsList.Count() - 1;
                         var questionId = oeQuestionsList[oeCount].Id; //checks for the last item in db (most recent added)
 
                         //initialise exercise paper list
@@ -737,8 +737,8 @@ namespace FYP.Controllers
         [Authorize]
         public IActionResult GenerateExercisePaper(int id)
         {
-            DbSet<OEQuestions> dbsOEQuestions = _dbContext.OEQuestions;
-            List<OEQuestions> questionList = dbsOEQuestions.ToList();
+            DbSet<OEQuestionsPaper> dbsOEQuestions = _dbContext.OEQuestionsPaper;
+            List<OEQuestionsPaper> questionList = dbsOEQuestions.ToList();
             DbSet<OExPaperList> dbsOExPaperList = _dbContext.OExPaperList;
             List<OExPaperList> paperList = dbsOExPaperList.ToList();
             DbSet<ExercisePaper> dbsExercisePaper = _dbContext.ExercisePaper;
@@ -760,7 +760,7 @@ namespace FYP.Controllers
 
             //var filteredList = PaperQuestionList.Where(c => c.ExercisePaperId == id).ToList();
 
-            List<OEQuestions> model = new List<OEQuestions>();
+            List<OEQuestionsPaper> model = new List<OEQuestionsPaper>();
             List<int> questionNums = new List<int>();
             var filteredList = paperList.Where(c => c.ExercisePaperId == id).ToList();
 
@@ -775,7 +775,7 @@ namespace FYP.Controllers
                 {
                     if (x.Id == item)
                     {
-                        OEQuestions oeQ = new OEQuestions();
+                        OEQuestionsPaper oeQ = new OEQuestionsPaper();
                         oeQ.Id = x.Id;
                         oeQ.Question = x.Question;
                         oeQ.Figure = x.Figure;
