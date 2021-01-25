@@ -21,22 +21,7 @@ namespace FYP.Controllers
             _dbContext = dbContext;
         }
 
-        [Authorize]
-        public IActionResult ViewOEPapers()
-        {
-            DbSet<ExercisePaper> dbs = _dbContext.ExercisePaper;
-            List<ExercisePaper> model = dbs.ToList();
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            DbSet<ExercisePaper> dbsExercisePaper = _dbContext.ExercisePaper;
-            DbSet<AppUser> dbsUser = _dbContext.AppUser;
-
-            ViewData["ExercisePaper"] = dbsExercisePaper.ToList<ExercisePaper>();
-            ViewData["users"] = dbsUser.ToList<AppUser>();
-
-            return View(model);
-        }
 
         [Authorize]
         public IActionResult AutoGenerateQn()
@@ -232,8 +217,31 @@ namespace FYP.Controllers
             return RedirectToAction("ViewOEQuestions");
         }
 
+        [Authorize]
+        public IActionResult ViewOEPapers()
+        {
+            DbSet<ExercisePaper> dbs = _dbContext.ExercisePaper;
+            List<ExercisePaper> model = dbs.ToList();
 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
+            DbSet<ExercisePaper> dbsExercisePaper = _dbContext.ExercisePaper;
+            DbSet<AppUser> dbsUser = _dbContext.AppUser;
+
+            ViewData["ExercisePaper"] = dbsExercisePaper.ToList<ExercisePaper>();
+            ViewData["users"] = dbsUser.ToList<AppUser>();
+
+            return View(model);
+        }
+
+        [Authorize]
+        public IActionResult EditOEQuestionsPaper(int id)
+        {
+            DbSet<OEQuestionsPaper> exP = _dbContext.OEQuestionsPaper;
+            List<OEQuestionsPaper> ex = exP.Where(c => c.Id == id).ToList();
+
+            return View(ex);
+        }
 
         [Authorize]
         public IActionResult DeleteOEQuestionsPaper(int id)
@@ -708,16 +716,15 @@ namespace FYP.Controllers
                         //var figureFinal = figureSplit[variant_num];                        //Figure based on random
                         //var questionFinal = questionSplit[variant_num];                    //Question based on random
                         //var answerFinal = answerSplit[variant_num];                        //Answer based on random
-                        var topicName = item;                                              //Topic
-                        DbSet<Topics> dbTopic = _dbContext.Topics;
-                        var topic = dbTopic.Where(c => c.Name == topicName).FirstOrDefault().ToString();
+                        var topicName = item;                                                //Topic
+                        var topic = topicsList.Where(m => m.Name.Equals(topicName)).FirstOrDefault();
 
                         //Insert values into type of OEQuestionsPaper
                         OEQuestionsPaper oeQ = new OEQuestionsPaper();                               //Type OEQuestionsPaper to store data of the same type
                         oeQ.Figure = figure_;
                         oeQ.Question = question_;
                         oeQ.Answer = answer_;
-                        oeQ.Topic = topic;
+                        oeQ.Topic = topic.Name.ToString();
 
                         //Insert into db
                         _dbContext.OEQuestionsPaper.Add(oeQ);

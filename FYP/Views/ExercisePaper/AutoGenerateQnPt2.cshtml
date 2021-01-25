@@ -153,7 +153,7 @@
     $(document).ready(function () {
 
         $("#randomise").click(function () {
-            var totalVar = @Model.QuestionVar.Split(",").Count();
+            var totalVar = @Model.QuestionVar.Split("|||").Count();
             var randVal = Math.floor((Math.random() * totalVar));
 
             LoadFigure(@Model.Id, randVal);

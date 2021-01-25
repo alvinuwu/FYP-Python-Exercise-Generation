@@ -1,0 +1,181 @@
+﻿@model List<OEQuestionsPaper>
+@{
+    ViewBag.Title = "Exercise Paper";
+}
+
+<div id="tab" class="tab-pane">
+    <div class="panel-body">
+        <div style="padding: 20px">
+            <div class="row">
+                <div class="col-6">
+                    <form asp-controller="ExercisePaper" asp-action="EditOEQuestionsPaper" method="post" class="form-horizontal" role="form">
+                        <div class="form" style="width: 1000px">
+                            <br /><br />
+                            <p class="header"><b>Python Open-Ended Questions</b></p>
+                            <hr class="line" />
+
+                            <div class="form-group row">
+                                <label class="col-2 control-label text-sm-right"></label>
+                                <div class="col-8">
+                                    <br />
+                                    <h2 style="text-align: center">@ViewData["ExercisePaperName"]</h2>
+                                </div>
+                            </div>
+                            <br />
+                            <hr class="line" />
+                            <br /><br />
+                            @if (Model != null)
+                            {
+                                int k = 0;
+                                @foreach (var item in Model)
+                                {
+                                    <div class="form-group row">
+                                        <label class="col-2 control-label text-sm-right"></label>
+                                        <div class="col-8">
+                                            <div><b><u>Question @(k + 1)</u></b></div>
+                                            <br />
+                                            <div>
+                                                <pre>
+                                                @*@{ 
+                                                    string space = "/\n/g";
+                                                    var figure = item.Figure;
+                                                    figure = figure.Replace("[space]", space);
+                                                }*@                          
+                                                
+                                                @{
+                                                    var figure = item.Figure;
+                                                    if (figure.Contains("[comma]"))
+                                                    {
+                                                        figure.Replace("[comma]", ",");
+                                                    }
+                                                    if (figure.Contains("[nline]"))
+                                                    {
+                                                        var split = figure.Split("[nline]");
+                                                        int counter = 0;
+                                                        foreach (var i in split)
+                                                        {
+                                                            @split[counter]<br />
+
+
+
+
+
+
+
+                                                            counter++;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @figure<br />
+
+
+
+
+
+
+
+                                                    }
+                                                }
+                                            </pre>
+                                            </div>
+                                            <div>
+                                                <pre class="calibriFont">
+                                                @{
+                                                    var question = item.Question;
+                                                    if (question.Contains("[comma]"))
+                                                    {
+                                                        question.Replace("[comma]", ",");
+                                                    }
+                                                    if (question.Contains("[nline]"))
+                                                    {
+                                                        var split = question.Split("[nline]");
+                                                        int counter = 0;
+                                                        foreach (var i in split)
+                                                        {
+                                                            @split[counter]
+                                                            counter++;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @question
+                                                    }
+                                                }
+                                            </pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-2 control-label text-sm-right">Answer: </label>
+                                        <div class="col-8">
+                                            <input type="text" name="answer[@k]" id="answer" class="answer" /><br />
+                                            @*Change to TextArea*@
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    k++;
+                                }
+                            }
+
+                            <br />
+                            <hr class="line" />
+                            <br /><br />
+                            <div class="form-group row">
+                                <label class="col-2 control-label text-sm-right"></label>
+                                <div class="col-8">
+                                    <input style="background-color:dodgerblue; color:white" type="submit" value="Submit" class="btn btn-default" />
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" name="exercisePaperId" value="@ViewData["exercisePaperId"]" hidden />
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <br /><br /><br />
+        </div>
+    </div>
+</div>
+
+<style>
+    .calibriFont {
+        font-family: 'Calibri';
+        font-size: 18px
+    }
+
+    hr.line {
+        border-top: 2px solid black;
+        width: 800px;
+        margin-top: 0px;
+    }
+
+    p.header {
+        width: 900px;
+        text-align: right;
+        color: darkgray;
+        margin-bottom: 0px;
+    }
+
+    p.topics {
+        color: black;
+        margin-bottom: 0px;
+        font-size: 19px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+
+
+
+
+    });
+
+
+
+</script>
