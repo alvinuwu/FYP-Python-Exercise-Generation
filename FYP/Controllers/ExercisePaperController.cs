@@ -29,8 +29,10 @@ namespace FYP.Controllers
             DbSet<Topics> topics = _dbContext.Topics;
             List<Topics> model = topics.ToList();
             ViewData["topics"] = new SelectList(model, "Id", "Name");
+            DbSet<OEQuestion_Templates> oeQT = _dbContext.OEQuestion_Templates;
+            List<OEQuestion_Templates> oeQTList = oeQT.ToList();
 
-            return View();
+            return View(oeQTList);
         }
 
         [Authorize]
@@ -152,6 +154,10 @@ namespace FYP.Controllers
         {
             DbSet<OEQuestions> oeQ = _dbContext.OEQuestions;
             List<OEQuestions> oeList = oeQ.ToList();
+
+            DbSet<Topics> topics = _dbContext.Topics;
+            List<Topics> model = topics.ToList();
+            ViewData["topics"] = new SelectList(model, "Id", "Name");
 
             return View(oeList);
         }

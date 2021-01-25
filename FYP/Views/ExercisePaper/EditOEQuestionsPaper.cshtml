@@ -1,181 +1,135 @@
-﻿@model List<OEQuestionsPaper>
-@{
-    ViewBag.Title = "Exercise Paper";
-}
+﻿@model AutoGenerateQn
+<html>
+<head>
 
-<div id="tab" class="tab-pane">
-    <div class="panel-body">
-        <div style="padding: 20px">
-            <div class="row">
-                <div class="col-6">
-                    <form asp-controller="ExercisePaper" asp-action="EditOEQuestionsPaper" method="post" class="form-horizontal" role="form">
-                        <div class="form" style="width: 1000px">
-                            <br /><br />
-                            <p class="header"><b>Python Open-Ended Questions</b></p>
-                            <hr class="line" />
+    In tables:
+    -------------
+    Firstly, Loop through a list to display all the questions in the paper [Right side of the page]
 
+    Secondly, Loop through a list [FILTER AWAY: Questions already on the right side] to display all the questions that is available 
+    in OEQuestions [Left side of the page]
+
+    Next, add action buttons that sends AJAX that sends data to retrieve id of currently selected item, so when user clicks to
+    add to the right side of the page, the left side will update to remove that item, while the right side will update to add
+    that item
+
+    If user clicks the delete button on the right side, the item will disappear and the left side will appear that item.
+
+    Add Filter for topics
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    <div id="tab" class="tab-pane">
+        <div class="panel-body">
+            <div style="padding: 20px">
+
+                @{
+                    ViewBag.Title = "Edit Open-Ended Paper";
+                }
+
+                <h2>@ViewData["Title"]</h2>
+                <br />
+                <br />
+                <div class="container">
+                    <div class="col-10">
+
+                        <div class="form-horizontal">
                             <div class="form-group row">
-                                <label class="col-2 control-label text-sm-right"></label>
-                                <div class="col-8">
-                                    <br />
-                                    <h2 style="text-align: center">@ViewData["ExercisePaperName"]</h2>
+                                <label class="control-label col-2 text-left"><b>Topic : </b></label>
+                                <div class="col-6">
+                                    <select asp-for="Topics" id="topics" class="form-control col-6" style="width: 100%; height: 100px; font-family: 'HP Simplified'"
+                                            asp-items="@((SelectList)ViewData["topics"])">
+                                    </select>
+                                    @Html.ValidationMessageFor(d => d.Topics, null, new { @class = "text-danger" })
                                 </div>
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <hr />
+                                <br />
+
+                                <hr />
+
                             </div>
-                            <br />
-                            <hr class="line" />
-                            <br /><br />
-                            @if (Model != null)
-                            {
-                                int k = 0;
-                                @foreach (var item in Model)
-                                {
-                                    <div class="form-group row">
-                                        <label class="col-2 control-label text-sm-right"></label>
-                                        <div class="col-8">
-                                            <div><b><u>Question @(k + 1)</u></b></div>
-                                            <br />
-                                            <div>
-                                                <pre>
-                                                @*@{ 
-                                                    string space = "/\n/g";
-                                                    var figure = item.Figure;
-                                                    figure = figure.Replace("[space]", space);
-                                                }*@                          
-                                                
-                                                @{
-                                                    var figure = item.Figure;
-                                                    if (figure.Contains("[comma]"))
-                                                    {
-                                                        figure.Replace("[comma]", ",");
-                                                    }
-                                                    if (figure.Contains("[nline]"))
-                                                    {
-                                                        var split = figure.Split("[nline]");
-                                                        int counter = 0;
-                                                        foreach (var i in split)
-                                                        {
-                                                            @split[counter]<br />
 
-
-
-
-
-
-
-                                                            counter++;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        @figure<br />
-
-
-
-
-
-
-
-                                                    }
-                                                }
-                                            </pre>
-                                            </div>
-                                            <div>
-                                                <pre class="calibriFont">
-                                                @{
-                                                    var question = item.Question;
-                                                    if (question.Contains("[comma]"))
-                                                    {
-                                                        question.Replace("[comma]", ",");
-                                                    }
-                                                    if (question.Contains("[nline]"))
-                                                    {
-                                                        var split = question.Split("[nline]");
-                                                        int counter = 0;
-                                                        foreach (var i in split)
-                                                        {
-                                                            @split[counter]
-                                                            counter++;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        @question
-                                                    }
-                                                }
-                                            </pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-2 control-label text-sm-right">Answer: </label>
-                                        <div class="col-8">
-                                            <input type="text" name="answer[@k]" id="answer" class="answer" /><br />
-                                            @*Change to TextArea*@
-                                        </div>
-                                    </div>
-                                    <br />
-                                    <br />
-                                    k++;
-                                }
-                            }
-
-                            <br />
-                            <hr class="line" />
-                            <br /><br />
-                            <div class="form-group row">
-                                <label class="col-2 control-label text-sm-right"></label>
-                                <div class="col-8">
-                                    <input style="background-color:dodgerblue; color:white" type="submit" value="Submit" class="btn btn-default" />
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <input type="text" name="exercisePaperId" value="@ViewData["exercisePaperId"]" hidden />
-                            </div>
                         </div>
 
-                    </form>
+                        <div class="col-13">
+
+                            <table class="table table-bordered table-condensed table-hover table-striped">
+                                <thead>
+                                    <tr style="background-color:darkblue">
+                                        <th scope="col" width="2%" style="color:white">#</th>
+                                        <th scope="col" width="30%" style="color:white">Figure</th>
+                                        <th scope="col" width="20%" style="color:white">Question</th>
+                                        <th scope="col" width="20%" style="color:white">Answer</th>
+                                        <th scope="col" width="5%" style="color:white">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="divQuestion">
+                                    @*AJAX*@
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="form-group row">
+                            @*<label class="control-label col-5 text-right"></label>
+                                <div class="col-8">
+                                    <input style="background-color:dodgerblue; color:white" type="submit" value="Confirm" class="btn btn-default" />
+                                    <a class="btn btn-default" style="background-color: lightgray; color: black" asp-action="ViewOEPapers" asp-controller="Home">Cancel</a>
+                                </div>*@
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <br /><br /><br />
         </div>
     </div>
-</div>
-
-<style>
-    .calibriFont {
-        font-family: 'Calibri';
-        font-size: 18px
-    }
-
-    hr.line {
-        border-top: 2px solid black;
-        width: 800px;
-        margin-top: 0px;
-    }
-
-    p.header {
-        width: 900px;
-        text-align: right;
-        color: darkgray;
-        margin-bottom: 0px;
-    }
-
-    p.topics {
-        color: black;
-        margin-bottom: 0px;
-        font-size: 19px;
-    }
-</style>
-
+</body>
+</html>
 <script>
+
+
     $(document).ready(function () {
 
 
 
-
+        $("#topics").change(ajaxLoadQuestion);
     });
 
 
 
+    function ajaxLoadQuestion() {
+        var topic = $("#topics").val();
+        var apiUrl = "/api/OEQuestion/" + topic;
+        var divQuestion = $("#divQuestion");
+
+        var linkString1 = '<a href="/ExercisePaper/AutoGenerateQnPt2/?id=';
+        var linkString2 = '" style="color: black"><b>Select</b></a>';
+
+        divQuestion.html("");
+
+        $.getJSON(apiUrl, function (result) {
+            $.each(result, function (i, question) {
+                divQuestion.append(
+                    "<tr><td>" + (i + 1) +
+                    "</td><td>" + question.figure +
+                    "</td><td>" + question.question +
+                    "</td><td>" + question.answer +
+                    "</td><td>" + "<button>" + linkString1 + question.id + "&topicId=" + question.topicId + linkString2 + "</button>" +
+                    "</td></tr>"
+                );
+            });
+        });
+    }
 </script>

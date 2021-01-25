@@ -1,4 +1,7 @@
-﻿@model AutoGenerateQn
+﻿@model List<OEQuestion_Templates>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <html>
     <head>
 
@@ -17,41 +20,41 @@
                     <br />
                     <div class="container">
                         <div class="col-10">
-                            
-                                <div class="form-horizontal">
-                                    <div class="form-group row">
-                                        <label class="control-label col-2 text-left"><b>Topic : </b></label>
-                                        <div class="col-6">
-                                            <select asp-for="Topics" id="topics" class="form-control col-6" style="width: 100%; height: 100px; font-family: 'HP Simplified'"
-                                                    asp-items="@((SelectList)ViewData["topics"])">
-                                            </select>
-                                            @Html.ValidationMessageFor(d => d.Topics, null, new { @class = "text-danger" })
-                                        </div>
-                                        <br />
-                                        <br />
-                                        @*<label class="control-label col-5 text-right"><b>Maximum Usage for Question : </b></label>
+
+                            <div class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="control-label col-2 text-left"><b>Topic : </b></label>
+                                    <div class="col-6">
+                                        <select id="topics" class="form-control col-6" style="font-family: 'HP Simplified'"
+                                                asp-items="@((SelectList)ViewData["topics"])">
+                                            <option id="0">All Topics</option>
+                                        </select>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    @*<label class="control-label col-5 text-right"><b>Maximum Usage for Question : </b></label>
                                         <div class="col-6">
                                             <input type="number" asp-for="UseCount" class="form-control" />
                                         </div>*@
-                                        <br />
-                                        <br />
+                                    <br />
+                                    <br />
 
-                                        @*<label class="control-label col-2 text-right"></label>
+                                    @*<label class="control-label col-2 text-right"></label>
                                         <div class="col-6">
                                             <button type="button" style="color:black" id="generateQ">Display Questions</button>
                                         </div>*@
 
-                                        <br />
-                                        <br />
-                                        <hr />
-                                        <br />
+                                    <br />
+                                    <br />
+                                    <hr />
+                                    <br />
 
-                                        <hr />
-
-                                    </div>
+                                    <hr />
 
                                 </div>
-                            
+
+                            </div>
+
                             <div class="col-13">
 
                                 <table class="table table-bordered table-condensed table-hover table-striped">
@@ -66,16 +69,44 @@
                                     </thead>
                                     <tbody id="divQuestion">
                                         @*AJAX*@
+                                        @if (Model != null)
+                                        {
+                                            int count = 1;
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @count
+                                                    </td>
+                                                    <td>
+                                                        @item.Figure
+                                                    </td>
+                                                    <td>
+                                                        @item.Question
+                                                    </td>
+                                                    <td>
+                                                        @item.Answer
+                                                    </td>
+                                                    <td align="center">
+                                                        <button>
+                                                            <a href="/ExercisePaper/AutoGenerateQnPt2/?id=@item.Id&topicId=@item.TopicId" style="color: black"><b>Select</b></a>
+                                                            
+                                                        </button>
+                                                        </td>
+                                                </tr>
+                                                count++;
+                                            }
+                                        }
                                     </tbody>
                                 </table>
 
                             </div>
                             <div class="form-group row">
                                 @*<label class="control-label col-5 text-right"></label>
-                                <div class="col-8">
-                                    <input style="background-color:dodgerblue; color:white" type="submit" value="Confirm" class="btn btn-default" />
-                                    <a class="btn btn-default" style="background-color: lightgray; color: black" asp-action="ViewOEPapers" asp-controller="Home">Cancel</a>
-                                </div>*@
+                                    <div class="col-8">
+                                        <input style="background-color:dodgerblue; color:white" type="submit" value="Confirm" class="btn btn-default" />
+                                        <a class="btn btn-default" style="background-color: lightgray; color: black" asp-action="ViewOEPapers" asp-controller="Home">Cancel</a>
+                                    </div>*@
                             </div>
                         </div>
                     </div>

@@ -11,5 +11,6 @@ namespace FYP.Models
         public string Figure { get; set; }
         public string Answer { get; set; }
         public int? UseCount { get; set; }
+
     }
 }
