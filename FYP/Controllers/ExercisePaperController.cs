@@ -22,7 +22,7 @@ namespace FYP.Controllers
         }
 
         [Authorize]
-        public IActionResult Index()
+        public IActionResult ViewOEPapers()
         {
             DbSet<ExercisePaper> dbs = _dbContext.ExercisePaper;
             List<ExercisePaper> model = dbs.ToList();
@@ -232,6 +232,35 @@ namespace FYP.Controllers
             return RedirectToAction("ViewOEQuestions");
         }
 
+
+
+
+        [Authorize]
+        public IActionResult DeleteOEQuestionsPaper(int id)
+        {
+            DbSet<ExercisePaper> ex = _dbContext.ExercisePaper;
+            ExercisePaper oe = ex.Where(c => c.Id == id).FirstOrDefault();
+
+            if (oe != null)
+            {
+                ex.Remove(oe);
+                if (_dbContext.SaveChanges() == 1)
+                {
+                    TempData["Msg"] = "Open Ended Paper deleted!";
+                    TempData["MsgType"] = "warning";
+                }
+                else
+                {
+                    TempData["Msg"] = "Failed to delete Paper!";
+                }
+            }
+            else
+            {
+                TempData["Msg"] = "Question not found!";
+            }
+            return RedirectToAction("ViewOEPapers");
+        }
+
         [Authorize]
         public IActionResult GenerateOE()
         {
@@ -366,7 +395,7 @@ namespace FYP.Controllers
             }
 
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewOEPapers");
         }
 
         [Authorize]
@@ -479,7 +508,7 @@ namespace FYP.Controllers
             }
 
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewOEPapers");
         }
 
         public IActionResult OE2(string word)
@@ -533,7 +562,7 @@ namespace FYP.Controllers
                 List<Topics> topicsList = lstOfTopics.ToList();
                 int totalQns = createExPaper.OETotalQns;
                 int actualTotalQns = 0;
-                int idCounter = papersList.Count() + 1;  //Sets the exercisepaperId later on
+                int idCounter = papersList[papersList.Count() - 1].Id + 1;  //Sets the exercisepaperId later on
                 var topicList = "";
                 var itemString = "";
                 var i = 1;
@@ -731,7 +760,7 @@ namespace FYP.Controllers
             }
 
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewOEPapers");
         }
 
         [Authorize]
@@ -870,7 +899,7 @@ namespace FYP.Controllers
             _dbContext.SubmitPaper.Add(sP);
             _dbContext.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewOEPapers");
         }
 
         public IActionResult PaperList()
