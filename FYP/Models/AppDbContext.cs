@@ -23,6 +23,7 @@ namespace FYP.Models
         public virtual DbSet<SubmitPaper> SubmitPaper { get; set; }
         public virtual DbSet<OEQuestion_Templates> OEQuestion_Templates { get; set; }
         public virtual DbSet<OEQuestions> OEQuestions { get; set; }
+        public virtual DbSet<OEQuestionsPaper> OEQuestionsPaper { get; set; }
         public virtual DbSet<Topics> Topics { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

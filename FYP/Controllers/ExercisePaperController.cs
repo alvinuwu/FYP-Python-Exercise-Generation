@@ -106,7 +106,7 @@ namespace FYP.Controllers
             var oeList = dbs.Where(l => l.Id == id).FirstOrDefault();
 
             Random r = new Random();
-            var figureSplit = oeList.FigureVar.Split(", ");
+            var figureSplit = oeList.FigureVar.Split("|||");
 
             var figure = figureSplit[rand];
 
@@ -126,7 +126,7 @@ namespace FYP.Controllers
             var oeList = dbs.Where(l => l.Id == id).FirstOrDefault();
 
             Random r = new Random();
-            var questionSplit = oeList.QuestionVar.Split(", ");
+            var questionSplit = oeList.QuestionVar.Split("|||");
 
             var question = questionSplit[rand];
 
@@ -147,7 +147,7 @@ namespace FYP.Controllers
             var oeList = dbs.Where(l => l.Id == id).FirstOrDefault();
 
             Random r = new Random();
-            var answerSplit = oeList.AnswerVar.Split(", ");
+            var answerSplit = oeList.AnswerVar.Split("|||");
 
             var answer = answerSplit[rand];
 
@@ -282,7 +282,7 @@ namespace FYP.Controllers
                         }
                         else if (questionNullRemove.Count() > questionCount)
                         {
-                            questionVar += item_.Replace(Environment.NewLine, "[nline]") + ", ";
+                            questionVar += item_.Replace(Environment.NewLine, "[nline]") + "|||";
                         }
                         questionCount++;
                     }
@@ -310,7 +310,7 @@ namespace FYP.Controllers
                         }
                         else if (figureNullRemove.Count() > figureCount)
                         {
-                            figureVar += item_.Replace(Environment.NewLine, "[nline]") + ", ";
+                            figureVar += item_.Replace(Environment.NewLine, "[nline]") + "|||";
                         }
                         figureCount++;
                     }
@@ -337,7 +337,7 @@ namespace FYP.Controllers
                         }
                         else if (answerNullRemove.Count() > answerCount)
                         {
-                            answerVar += item_.Replace(Environment.NewLine, "[nline]") + ", ";
+                            answerVar += item_.Replace(Environment.NewLine, "[nline]") + "|||";
                         }
                         answerCount++;
                     }
@@ -542,9 +542,9 @@ namespace FYP.Controllers
                 {
                     lstTopic.Add(item);
                 }
-                
+
                 //Formats string of topics
-                foreach(var item in lstTopic)
+                foreach (var item in lstTopic)
                 {
                     foreach (var x in topicsList)
                     {
@@ -553,7 +553,7 @@ namespace FYP.Controllers
                             itemString = x.Name;
                         }
                     }
-                    
+
                     if (createExPaper.Topics.Count() == i)
                     {
                         topicList = String.Format(topicList + itemString);
@@ -573,35 +573,52 @@ namespace FYP.Controllers
                 Random r = new Random();
 
                 //initialise list
-                List<int> selectedTopics = new List<int>();
+                List<string> selectedTopics = new List<string>();
 
                 //loop through all topic Ids
                 foreach (var item in createExPaper.Topics)
                 {
-                    selectedTopics.Add(item);
+                    var topicString = "";
+                    foreach (var obj in topicsList)
+                    {
+                        if (item == obj.Id)
+                        {
+                            topicString = obj.Name;
+                        }
+                    }
+                    selectedTopics.Add(topicString);
                 }
 
                 //determine number of questions per topic
                 int qnPerTopic = totalQns / createExPaper.Topics.Count();
                 int qnLeftOver = totalQns % createExPaper.Topics.Count(); //Takes leftover if division has remainder, can also use totalQns - qnPerTopic to get same result
-                
-                
+
+
                 //Extra questions selected by random topic
-                List<int> randomTopicSelector = new List<int>();
+                List<string> randomTopicSelector = new List<string>();
                 for (int qnCount = 0; qnCount < qnLeftOver; qnCount++)
                 {
-                    randomTopicSelector.Add(r.Next(1, createExPaper.Topics.Count()));
+                    var item = r.Next(1, createExPaper.Topics.Count());
+                    var topicString = "";
+                    foreach (var obj in topicsList)
+                    {
+                        if (item == obj.Id)
+                        {
+                            topicString = obj.Name;
+                        }
+                    }                    
+                    randomTopicSelector.Add(topicString);
                 }
-                                
-                DbSet<OEQuestion_Templates> oeQT = _dbContext.OEQuestion_Templates;
+
+                DbSet<OEQuestions> oeQT = _dbContext.OEQuestions;
 
                 //For each topic, add in questions
                 foreach (var item in selectedTopics)
                 {
-                    List<OEQuestion_Templates> oeQTList = oeQT.Where(c => c.TopicId == item).ToList();
-                    List<OEQuestion_Templates> chosen = new List<OEQuestion_Templates>();
+                    List<OEQuestions> oeQList = oeQT.Where(c => c.Topic == item).ToList();
+                    List<OEQuestions> chosen = new List<OEQuestions>();
                     List<int> topicTotalQns = new List<int>();
-                    int noOfQns = oeQTList.Count();
+                    int noOfQns = oeQList.Count();
                     for (int x = 0; x < noOfQns; x++)
                     {
                         topicTotalQns.Add(x + 1);
@@ -613,8 +630,8 @@ namespace FYP.Controllers
                         if (topicTotalQns.Count() > 0)
                         {
                             int rand = r.Next(0, topicTotalQns.Count() - 1);
-                            chosen.Add(oeQTList[rand]);
-                            oeQTList.Remove(oeQTList[rand]);
+                            chosen.Add(oeQList[rand]);
+                            oeQList.Remove(oeQList[rand]);
                             topicTotalQns.Remove(topicTotalQns[rand]);
                         }
 
@@ -628,7 +645,7 @@ namespace FYP.Controllers
                             if (topicTotalQns.Count() > 0)
                             {
                                 int rand = r.Next(0, topicTotalQns.Count() - 1);
-                                chosen.Add(oeQTList[rand]);
+                                chosen.Add(oeQList[rand]);
                                 topicTotalQns.Remove(topicTotalQns[rand]);
                             }
                         }
@@ -639,52 +656,51 @@ namespace FYP.Controllers
                         //NEED TO GROUP Figure + FigureVar, Question + QuestionVar, Answer + AnswerVar
                         #region Combine figure, question, and answer
                         var figure_ = obj.Figure;
-                        var figureVariants = obj.FigureVar;
-                        var combineFigure = figure_ + "|||" + figureVariants;
+                        //var figureVariants = obj.FigureVar;
+                        //var combineFigure = figure_ + "|||" + figureVariants;
 
-                        var figureSplit = combineFigure.Split("|||");
+                        //var figureSplit = combineFigure.Split("|||");
 
                         var question_ = obj.Question;
-                        var questionVariants = obj.QuestionVar;
-                        var combineQuestion = question_ + "|||" + questionVariants;
+                        //var questionVariants = obj.QuestionVar;
+                        //var combineQuestion = question_ + "|||" + questionVariants;
 
-                        var questionSplit = combineQuestion.Split("|||");
+                        //var questionSplit = combineQuestion.Split("|||");
 
                         var answer_ = obj.Answer;
-                        var answerVariants = obj.AnswerVar;
-                        var combineAnswer = answer_ + "|||" + answerVariants;
+                        //var answerVariants = obj.AnswerVar;
+                        //var combineAnswer = answer_ + "|||" + answerVariants;
 
-                        var answerSplit = combineAnswer.Split("|||");
+                        //var answerSplit = combineAnswer.Split("|||");
                         #endregion
 
                         //Choosing of question
-                        int variant_num = r.Next(0, figureSplit.Length - 1);               //Random using figure's list
-                        var figureFinal = figureSplit[variant_num];                        //Figure based on random
-                        var questionFinal = questionSplit[variant_num];                    //Question based on random
-                        var answerFinal = answerSplit[variant_num];                        //Answer based on random
-                        int topicId = item;                                                //Topic
+                        //int variant_num = r.Next(0, figureSplit.Length - 1);               //Random using figure's list
+                        //var figureFinal = figureSplit[variant_num];                        //Figure based on random
+                        //var questionFinal = questionSplit[variant_num];                    //Question based on random
+                        //var answerFinal = answerSplit[variant_num];                        //Answer based on random
+                        var topicName = item;                                              //Topic
                         DbSet<Topics> dbTopic = _dbContext.Topics;
-                        var topic = dbTopic.Where(c => c.Id == topicId).FirstOrDefault().ToString();
+                        var topic = dbTopic.Where(c => c.Name == topicName).FirstOrDefault().ToString();
 
-                        //Insert values into type of OEQuestions
-                        OEQuestions oeQ = new OEQuestions();                               //Type OEQuestions to store data of the same type
-                        oeQ.Figure = figureFinal;
-                        oeQ.Question = questionFinal;
-                        oeQ.Answer = answerFinal;
+                        //Insert values into type of OEQuestionsPaper
+                        OEQuestionsPaper oeQ = new OEQuestionsPaper();                               //Type OEQuestionsPaper to store data of the same type
+                        oeQ.Figure = figure_;
+                        oeQ.Question = question_;
+                        oeQ.Answer = answer_;
                         oeQ.Topic = topic;
 
                         //Insert into db
-                        _dbContext.OEQuestions.Add(oeQ);
+                        _dbContext.OEQuestionsPaper.Add(oeQ);
                         _dbContext.SaveChanges();
 
                         //Set questionID inside exercise paper db
-                        DbSet<OEQuestions> oeQuestions = _dbContext.OEQuestions;
-                        List<OEQuestions> oeQuestionsList = oeQuestions.ToList();
-                        var questionId = 0;
-                        foreach (var item_ in oeQuestionsList)
-                        {
-                            questionId = item_.Id; //Cannot use .Count because some questions may be deleted
-                        }
+                        DbSet<OEQuestionsPaper> oeQuestions = _dbContext.OEQuestionsPaper;
+                        List<OEQuestionsPaper> oeQuestionsList = oeQuestions.ToList();
+
+                        var oeCount = oeQuestionsList.Count();
+                        var questionId = oeQuestionsList[oeCount].Id; //checks for the last item in db (most recent added)
+
                         //initialise exercise paper list
                         OExPaperList exercisePaper = new OExPaperList();
                         exercisePaper.ExercisePaperId = idCounter;
