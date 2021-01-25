@@ -8,7 +8,7 @@
         <div style="padding: 20px">
             <div class="row">
                 <div class="col-6">
-                    <form asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" method="post" class="form-horizontal" role="form">
+                    <form name="theForm" asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" method="post" class="form-horizontal" role="form">
                         <div class="form" style="width: 1000px">
                             <br /><br />
                             <p class="header"><b>Python Open-Ended Questions</b></p>
@@ -36,6 +36,8 @@
                                 </div>
                             </div>
                             <br />
+                            <hr class="line" />
+                            <p id="timer" class="timer"></p>
                             <hr class="line" />
                             <br /><br />
                             @if (Model != null)
@@ -72,12 +74,20 @@
 
 
 
+
+
+
+
                                                             counter++;
                                                         }
                                                     }
                                                     else
                                                     {
                                                         @figure<br />
+
+
+
+
 
 
 
@@ -133,7 +143,7 @@
                                 <div class="col-8">
                                     <input style="background-color:dodgerblue; color:white" type="submit" value="Submit" class="btn btn-default" />
                                 </div>
-                            </div>                        
+                            </div>
                             <div class="col-8">
                                 <input type="text" name="exercisePaperId" value="@ViewData["exercisePaperId"]" hidden />
                             </div>
@@ -171,21 +181,16 @@
         margin-bottom: 0px;
         font-size: 19px;
     }
+
+    p.timer {
+        text-align: center;
+        font-size: 60px;
+        margin-top: 0px;
+    }
 </style>
 
 <script>
-    @*$("form").submit(function () {
-        var count = 0;
-        @foreach (var item in Model)
-        {
-            <text>
-            if ($(".answer[" + count + "]").val() == null) {
-                $(".answer[" + count + "]").val(null);
-            }
-            count++;
-            </text>
-        }
-    });*@
+
 
     $(document).ready(function () {
 
@@ -194,6 +199,55 @@
         
     });
 
+    function ConfirmDelete() {
+        if (confirm("Are you sure you want to delete?") == false) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        }
+    }
+
+    function timerEnd() {
+        document.theForm.submit();
+    }
+
+    // Set the date we're counting down to
+    var totalMins = 30;
+
+    //1600 represents the compensation due to a delay, as the timer usually shows 3 seconds has passed even though
+    //it actually counted down from the actual number. Remove if it is already accurate.
+    var endTime = new Date().getTime() + (totalMins * 100);
+
+    // Update the count down every 1 second
+    var x = setInterval(function () {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = endTime - now;
+        // Time calculations for days, hours, minutes and seconds
+
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Output the result in an element with id="demo"
+        if (hours == 0) {
+            document.getElementById("timer").innerHTML = minutes + "m " + seconds + "s ";
+        }
+
+        else {
+            document.getElementById("timer").innerHTML = hours + "h "
+                + minutes + "m " + seconds + "s ";
+        }
+
+        // If the count down is over, write some text 
+        if (distance < 0) {
+            clearInterval(x);
+            timerEnd();
+        }
+    }, 1000);
 
 
 </script>
