@@ -93,7 +93,7 @@ namespace FYP.Controllers
             var oeList = dbs.Where(l => l.Id == id).FirstOrDefault();
 
             Random r = new Random();
-            var figureSplit = oeList.FigureVar.Split("|||");
+            var figureSplit = oeList.FigureVar.Split("[/]");
 
             var figure = figureSplit[rand];
 
@@ -113,7 +113,7 @@ namespace FYP.Controllers
             var oeList = dbs.Where(l => l.Id == id).FirstOrDefault();
 
             Random r = new Random();
-            var questionSplit = oeList.QuestionVar.Split("|||");
+            var questionSplit = oeList.QuestionVar.Split("[/]");
 
             var question = questionSplit[rand];
 
@@ -134,7 +134,7 @@ namespace FYP.Controllers
             var oeList = dbs.Where(l => l.Id == id).FirstOrDefault();
 
             Random r = new Random();
-            var answerSplit = oeList.AnswerVar.Split("|||");
+            var answerSplit = oeList.AnswerVar.Split("[/]");
 
             var answer = answerSplit[rand];
 
@@ -305,99 +305,112 @@ namespace FYP.Controllers
 
                 //set variable for the Variants to be stored as a single string to be stored in the database
                 int questionCount = 1;
-                string questionVar = "";
-                var questionNullRemove = new List<string>();     //Though the other 2 variants can be empty, the string might be saved as "example, "
-                foreach (var item in createExQuestion.QuestionVar)
+
+                if (createExQuestion.QuestionVar != null)
                 {
-                    if (item != null)
+                    string questionVar = "";
+                    var questionNullRemove = new List<string>();     //Though the other 2 variants can be empty, the string might be saved as "example, "
+
+                    foreach (var item in createExQuestion.QuestionVar)
                     {
-                        questionNullRemove.Add(item);
+                        if (item != null)
+                        {
+                            questionNullRemove.Add(item);
+                        }
                     }
-                }
-                foreach (var item in questionNullRemove)
-                {
-                    if (item != null)
+                    foreach (var item in questionNullRemove)
                     {
-                        var item_ = item.Replace(",", "[comma]");
-                        if (questionNullRemove.Count() == questionCount)
+                        if (item != null)
                         {
-                            questionVar += item_.Replace(Environment.NewLine, "[nline]");
+                            if (questionNullRemove.Count() == questionCount)
+                            {
+                                questionVar += item.Replace(Environment.NewLine, "[nline]");
+                            }
+                            else if (questionNullRemove.Count() > questionCount)
+                            {
+                                questionVar += item.Replace(Environment.NewLine, "[nline]") + "[/]";
+                            }
+                            questionCount++;
                         }
-                        else if (questionNullRemove.Count() > questionCount)
-                        {
-                            questionVar += item_.Replace(Environment.NewLine, "[nline]") + "|||";
-                        }
-                        questionCount++;
+
                     }
 
-                }
-
-                int figureCount = 1;
-                string figureVar = "";
-                var figureNullRemove = new List<string>();
-                foreach (var item in createExQuestion.QuestionVar)
-                {
-                    if (item != null)
+                    int figureCount = 1;
+                    string figureVar = "";
+                    var figureNullRemove = new List<string>();
+                    foreach (var item in createExQuestion.FigureVar)
                     {
-                        figureNullRemove.Add(item);
+                        if (item != null)
+                        {
+                            figureNullRemove.Add(item);
+                        }
                     }
-                }
-                foreach (var item in figureNullRemove)
-                {
-                    if (item != null)
+                    foreach (var item in figureNullRemove)
                     {
-                        var item_ = item.Replace(",", "[comma]");
-                        if (figureNullRemove.Count() == figureCount)
+                        if (item != null)
                         {
-                            figureVar += item_.Replace(Environment.NewLine, "[nline]");
+                            if (figureNullRemove.Count() == figureCount)
+                            {
+                                figureVar += item.Replace(Environment.NewLine, "[nline]");
+                            }
+                            else if (figureNullRemove.Count() > figureCount)
+                            {
+                                figureVar += item.Replace(Environment.NewLine, "[nline]") + "[/]";
+                            }
+                            figureCount++;
                         }
-                        else if (figureNullRemove.Count() > figureCount)
-                        {
-                            figureVar += item_.Replace(Environment.NewLine, "[nline]") + "|||";
-                        }
-                        figureCount++;
                     }
-                }
 
-                int answerCount = 1;
-                string answerVar = "";
-                var answerNullRemove = new List<string>();
-                foreach (var item in createExQuestion.QuestionVar)
-                {
-                    if (item != null)
+                    int answerCount = 1;
+                    string answerVar = "";
+                    var answerNullRemove = new List<string>();
+                    foreach (var item in createExQuestion.AnswerVar)
                     {
-                        answerNullRemove.Add(item);
+                        if (item != null)
+                        {
+                            answerNullRemove.Add(item);
+                        }
                     }
-                }
-                foreach (var item in answerNullRemove)
-                {
-                    if (item != null)
+                    foreach (var item in answerNullRemove)
                     {
-                        var item_ = item.Replace(",", "[comma]");
-                        if (answerNullRemove.Count() == answerCount)
+                        if (item != null)
                         {
-                            answerVar += item_.Replace(Environment.NewLine, "[nline]");
+                            if (answerNullRemove.Count() == answerCount)
+                            {
+                                answerVar += item.Replace(Environment.NewLine, "[nline]");
+                            }
+                            else if (answerNullRemove.Count() > answerCount)
+                            {
+                                answerVar += item.Replace(Environment.NewLine, "[nline]") + "[/]";
+                            }
+                            answerCount++;
                         }
-                        else if (answerNullRemove.Count() > answerCount)
-                        {
-                            answerVar += item_.Replace(Environment.NewLine, "[nline]") + "|||";
-                        }
-                        answerCount++;
                     }
+
+                    OEQuestion_Templates qT = new OEQuestion_Templates();
+                    qT.TopicId = topicId;
+                    qT.Figure = figure;
+                    qT.Question = question;
+                    qT.Answer = answer;
+                    qT.FigureVar = figureVar;
+                    qT.QuestionVar = questionVar;
+                    qT.AnswerVar = answerVar;
+                    _dbContext.OEQuestion_Templates.Add(qT);
+                    _dbContext.SaveChanges();
                 }
-
-                OEQuestion_Templates qT = new OEQuestion_Templates();
-                qT.TopicId = topicId;
-                qT.Figure = figure;
-                qT.Question = question;
-                qT.Answer = answer;
-                qT.FigureVar = figureVar;
-                qT.QuestionVar = questionVar;
-                qT.AnswerVar = answerVar;
-                _dbContext.OEQuestion_Templates.Add(qT);
-                _dbContext.SaveChanges();
-
-
+                else
+                {
+                    OEQuestion_Templates qT = new OEQuestion_Templates();
+                    qT.TopicId = topicId;
+                    qT.Figure = figure;
+                    qT.Question = question;
+                    qT.Answer = answer;
+                    qT.FigureVar = "";
+                    qT.QuestionVar = "";
+                    qT.AnswerVar = "";
+                    _dbContext.OEQuestion_Templates.Add(qT);
+                    _dbContext.SaveChanges();
+                }
 
                 TempData["Msg"] = "New Question added!";
                 TempData["MsgType"] = "success";
@@ -409,7 +422,7 @@ namespace FYP.Controllers
             }
 
 
-            return RedirectToAction("ViewOEPapers");
+            return RedirectToAction("AutoGenerateQn");
         }
 
         [Authorize]

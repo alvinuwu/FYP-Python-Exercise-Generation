@@ -28,7 +28,7 @@
                     <div id="displayQn" class="col-12">
                         <b>Figure</b>:<br />
                         <div class="offset-1 col-6 calibriFont" id="figure">
-                            <pre>
+                            <pre style="width: 800px">
                                     @{
                                         var figure = Model.Figure;
                                         if (figure.Contains("[comma]"))
@@ -42,14 +42,17 @@
                                             foreach (var i in split)
                                             {
                                                 @split[counter]<br />
+
                                                 counter++;
                                             }
                                         }
                                         else
                                         {
                                             @figure<br />
+
                                         }
-                                    }
+                                    }<br /><br />
+
                                 </pre>
                             @{ 
                                 var figureString = Model.Figure;
@@ -59,7 +62,7 @@
                         <hr />
                         <b>Question</b>:<br />
                         <div class="offset-1 col-6 calibriFont" id="question">
-                            
+                            <pre style="width: 800px">
                             @{
                                 var question = Model.Question;
                                 if (question.Contains("[comma]"))
@@ -72,7 +75,8 @@
                                     int counter = 0;
                                     foreach (var i in split)
                                     {
-                                        @split[counter]
+                                        @split[counter]<br />
+
                                         counter++;
                                     }
                                 }
@@ -83,18 +87,41 @@
                             }
                             @{ 
                                 var questionString = Model.Question;
-                            }
-                            
+                            }<br /><br />
+
+                            </pre>
                             <input value="@questionString" name="question" class="form-control" hidden />
                         </div>
                         <br />
                         <hr />
                         <b>Answer</b>:<br />
                         <div class="offset-1 col-6 calibriFont" id="answer" >
-                            @Model.Answer
+                            <pre style="width: 800px">
                             @{
-                                var answerString = Model.Answer;
+                                var answer = Model.Answer;
+                                if (answer.Contains("[comma]"))
+                                {
+                                    answer.Replace("[comma]", ",");
+                                }
+                                if (answer.Contains("[nline]"))
+                                {
+                                    var split = answer.Split("[nline]");
+                                    int counter = 0;
+                                    foreach (var i in split)
+                                    {
+                                        @split[counter]<br />
+                                        counter++;
+                                    }
+                                }
+                                else
+                                {
+                                    @answer
+                                }
                             }
+                            @{ 
+                                var answerString = Model.Answer;
+                            }<br /><br />
+                            </pre>
                             <input value="@answerString" name="answer" class="form-control" hidden />
                         </div>
                         <br /><br />
@@ -152,13 +179,22 @@
 
     $(document).ready(function () {
 
-        $("#randomise").click(function () {
-            var totalVar = @Model.QuestionVar.Split("|||").Count();
-            var randVal = Math.floor((Math.random() * totalVar));
+        var checkNull = "@Model.QuestionVar";
+        if (checkNull == "") {
+            $("#randomise").hide();
+        }
+        
 
-            LoadFigure(@Model.Id, randVal);
-            LoadQuestion(@Model.Id, randVal);
-            LoadAnswer(@Model.Id, randVal);
+        $("#randomise").click(function () {
+            var checkNull = "@Model.QuestionVar";
+            if (checkNull != "") {
+                var totalVar = @Model.QuestionVar.Split("[/]").Count();
+                var randVal = Math.floor((Math.random() * totalVar));
+
+                LoadFigure(@Model.Id, randVal);
+                LoadQuestion(@Model.Id, randVal);
+                LoadAnswer(@Model.Id, randVal);
+            }
         });
 
     });
