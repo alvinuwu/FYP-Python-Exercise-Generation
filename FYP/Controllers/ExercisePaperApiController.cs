@@ -85,6 +85,7 @@ namespace FYP.Controllers
                 foreach (var item in oeQList)
                 {
                     OEQuestions oe = new OEQuestions();
+                    oe.Topic = item.Topic;
                     oe.Figure = item.Figure;
                     oe.Question = item.Question;
                     oe.Answer = item.Answer;

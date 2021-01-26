@@ -38,6 +38,7 @@
                     <thead>
                         <tr style="background-color:darkblue">
                             <th scope="col" width="2%" style="color:white">#</th>
+                            <th scope="col" width="5%" style="color:white">Topic</th>
                             <th scope="col" width="15%" style="color:white">Figure</th>
                             <th scope="col" width="15%" style="color:white">Question</th>
                             <th scope="col" width="10%" style="color:white">Answer</th>
@@ -55,6 +56,9 @@
                                 <tr>
                                     <td>
                                         @count
+                                    </td>
+                                    <td>
+                                        @item.Topic
                                     </td>
                                     <td>
                                         @item.Figure
@@ -125,6 +129,7 @@
             $.each(result, function (i, question) {
                 divQuestion.append(
                     "<tr><td>" + (i + 1) +
+                    "</td><td>" + question.topic +
                     "</td><td>" + question.figure +
                     "</td><td>" + question.question +
                     "</td><td>" + question.answer +
