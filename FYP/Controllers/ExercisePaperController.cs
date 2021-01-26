@@ -22,6 +22,31 @@ namespace FYP.Controllers
         }
 
 
+        [Authorize]
+        public IActionResult DeleteOEQuestionsTemplate(int id)
+        {
+            DbSet<OEQuestion_Templates> ex = _dbContext.OEQuestion_Templates;
+            OEQuestion_Templates oe = ex.Where(c => c.Id == id).FirstOrDefault();
+
+            if (oe != null)
+            {
+                ex.Remove(oe);
+                if (_dbContext.SaveChanges() == 1)
+                {
+                    TempData["Msg"] = "Open Ended Template deleted!";
+                    TempData["MsgType"] = "warning";
+                }
+                else
+                {
+                    TempData["Msg"] = "Failed to delete Template!";
+                }
+            }
+            else
+            {
+                TempData["Msg"] = "Question Template not found!";
+            }
+            return RedirectToAction("AutoGenerateQn");
+        }
 
         [Authorize]
         public IActionResult AutoGenerateQn()
