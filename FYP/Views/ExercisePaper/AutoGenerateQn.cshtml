@@ -56,15 +56,13 @@
 
                                     <br />
                                     <br />
-                                    <hr />
-                                    <br />
-
-                                    <hr />
 
                                 </div>
 
                             </div>
 
+                            <a class="btn btn-default" style="color:white; background-color:dodgerblue" asp-action="GenerateOE" asp-controller="ExercisePaper">Create Template</a>
+                            <br /><br /><br />
                             <div class="col-13">
 
                                 <table class="table table-bordered table-condensed table-hover table-striped">
@@ -108,10 +106,40 @@
 
                                                     </td>
                                                     <td>
-                                                        @item.Question
+                                                        @{
+                                                            if (item.Question.Contains("[nline]"))
+                                                            {
+                                                                var split = item.Question.Split("[nline]");
+                                                                int counter = 0;
+                                                                foreach (var i in split)
+                                                                {
+                                                                    @split[counter]<br />
+                                                                    counter++;
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                @item.Question
+                                                            }
+                                                        }
                                                     </td>
                                                     <td>
-                                                        @item.Answer
+                                                        @{
+                                                            if (item.Answer.Contains("[nline]"))
+                                                            {
+                                                                var split = item.Question.Split("[nline]");
+                                                                int counter = 0;
+                                                                foreach (var i in split)
+                                                                {
+                                                                    @split[counter]<br />
+                                                                    counter++;
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                @item.Answer
+                                                            }
+                                                        }
                                                     </td>
                                                     <td align="center">
                                                         
@@ -142,7 +170,7 @@
         </div>
     </body>
 </html>
-<script>
+    <script>
 
 
     $(document).ready(function () {
@@ -166,8 +194,6 @@
         var apiUrl = "/api/OEQuestion/" + topic;
         var divQuestion = $("#divQuestion");
 
-        var linkString1 = '<a href="/ExercisePaper/AutoGenerateQnPt2/?id=';
-        var linkString2 = '" style="color: black"><b>Select</b></a>';
 
         divQuestion.html("");
 
@@ -178,10 +204,15 @@
                     "</td><td>" + question.figure +
                     "</td><td>" + question.question +
                     "</td><td>" + question.answer +
-                    "</td><td>" + "<button>" + linkString1 + question.id + "&topicId=" + question.topicId + linkString2 + "</button>" +
+                    '</td><td align="center">' +
+                    '<a class="btn btn-default" href="/ExercisePaper/AutoGenerateQnPt2/?id=' + question.id + '&topicId=' + question.topicId +'" style="background-color: dodgerblue; color: white"><b>Generate</b></a> <br /><br />' +
+                    '<a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" href="/ExercisePaper/EditOEQuestionsTemplate/' + question.id + '">&#9998;</a>' + " " +
+                    '<a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" href="/ExercisePaper/DeleteOEQuestionsTemplate/"' + question.id + '"><i class="fa fa-trash"></i></a>' +
+
+
                     "</td></tr>"
                 );
             });
         });
     }
-</script>
+    </script>

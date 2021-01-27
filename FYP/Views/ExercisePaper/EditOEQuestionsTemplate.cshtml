@@ -1,0 +1,393 @@
+﻿@model OEQuestion_Templates
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+</head>
+<body>
+    <div id="tab" class="tab-pane">
+        <div class="panel-body">
+            <div style="padding: 20px">
+
+                @{
+                    ViewBag.Title = "Edit Open-Ended Template";
+                }
+
+                <h2>@ViewData["Title"]</h2>
+                <br />
+                <br />
+                <div class="container">
+                    <div class="col-6">
+                        <form asp-controller="ExercisePaper" asp-action="EditOEQuestionsTemplate" method="post" class="form-horizontal" role="form">
+                            <div class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="control-label col-5 text-right"><b>Topic : </b></label>
+                                    <div class="col-6">
+                                        <select disabled asp-for="TopicId" id="topics" class="form-control col-6" style="width: 100%"
+                                                asp-items="@((SelectList)ViewData["topics"])">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="control-label col-5 text-right"><b>Enter Figure : </b></label>
+                                    <div class="col-6">
+                                        <textarea rows="5" cols="100" class="form-control" style="width: 500px" id="Figure" name="Figure">
+                                            @{ 
+                                                var figure = Model.Figure;
+                                                if (figure.Contains("[nline]"))
+                                                {
+                                                    var figureList = figure.Split("[nline]");
+                                                    
+                                                    foreach (var item in figureList)
+                                                    {
+                                                        <text>@item</text> <text>&#13;&#10</text>
+                                                        
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    @figure
+                                                }
+
+                                            }
+
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-5 text-right"><b>Enter Question : </b></label>
+                                    <div class="col-6">
+                                        <textarea rows="5" cols="100" class="form-control" style="width: 500px" id="Question" name="Question">
+                                           @{ 
+                                                var question = Model.Question;
+                                                if (question.Contains("[nline]"))
+                                                {
+                                                    var questionList = question.Split("[nline]");
+                                                    
+                                                    foreach (var item in questionList)
+                                                    {
+                                                        <text>@item</text> <text>&#13;&#10</text>
+                                                       
+                                                   }
+
+                                               }
+                                               else
+                                               {
+                                                   @question
+                                               }
+
+                                            }
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-5 text-right"><b>Enter Answer : </b></label>
+                                    <div class="col-6">
+                                        <textarea rows="5" cols="100" class="form-control" style="width: 500px" id="Answer" name="Answer">
+                                           @{ 
+                                                var answer = Model.Answer;
+                                                if (answer.Contains("[nline]"))
+                                                {
+                                                    var answerList = answer.Split("[nline]");
+                                                    
+                                                    foreach (var item in answerList)
+                                                    {
+                                                       <text>@item</text> <text>&#13;&#10</text>
+                                                       
+                                                   }
+
+                                               }
+                                               else
+                                               {
+                                                   @answer
+                                               }
+
+                                            }
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <br />
+                                <hr style="width: 900px" />
+                                <h3 style="width: 900px; text-align:center">Variations of the same question</h3>
+                                <hr style="width: 900px" />
+                                <br />
+
+                                <div>
+
+                                    @{
+                                        if (!Model.FigureVar.Equals("") || !Model.QuestionVar.Equals("") || !Model.AnswerVar.Equals(""))
+                                        {
+                                            var figureVarList = Model.FigureVar.Split("[/]");
+
+                                            var questionVarList = Model.QuestionVar.Split("[/]");
+
+                                            var answerVarList = Model.AnswerVar.Split("[/]");
+
+                                            var countF = figureVarList.Count();
+                                            var countQ = questionVarList.Count();
+                                            var countA = answerVarList.Count();
+
+                                            var countList = new List<int>();
+                                            countList.Add(countF);
+                                            countList.Add(countQ);
+                                            countList.Add(countA);
+
+                                            var maxCount = 0;
+                                            foreach (var obj in countList)
+                                            {
+                                                if (obj > maxCount)
+                                                {
+                                                    maxCount = obj;
+                                                }
+                                            }
+
+                                            for (int counter = 0; counter < maxCount; counter++)
+                                            {
+
+                                                <div id="editVariants-@counter">
+
+                                                    <div class="form-group row">
+                                                        <label class="control-label col-6 text-right"><b>Enter Figure Variant: </b></label>
+                                                        <div class="col-6">
+                                                            <textarea placeholder="Figure Variant" rows="5" cols="100" style="width: 500px" id="FigureVar" name="FigureVar">
+                                                    @{ 
+                                                        var figureVar = figureVarList[counter];
+
+                                                            if (figureVar.Contains("[nline]"))
+                                                            {
+                                                                var split = figureVar.Split("[nline]");
+                                                                
+                                                                foreach (var i in split)
+                                                                {
+                                                                    <text>@i</text> <text>&#13;&#10</text>
+                                                                    
+                                                                }
+
+                                                            }
+                                                            else
+                                                            {
+                                                                @figureVar
+                                                            }
+                                                        
+                                                    }
+                                                </textarea>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="control-label col-6 text-right"><b>Enter Question Variant: </b></label>
+                                                        <div class="col-6">
+                                                            <textarea placeholder="Question Variant" rows="5" cols="100" style="width: 500px" id="QuestionVar" name="QuestionVar">
+                                                    @{ 
+                                                        var questionVar = questionVarList[counter];
+
+                                                            if (questionVar.Contains("[nline]"))
+                                                            {
+                                                                var split = questionVar.Split("[nline]");
+                                                                
+                                                                foreach (var i in split)
+                                                                {
+                                                                    <text>@i</text> <text>&#13;&#10</text>
+                                                                    
+                                                                }
+
+                                                            }
+                                                            else
+                                                            {
+                                                                @questionVar
+                                                            }
+                                                        
+                                                    }
+                                                </textarea>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="control-label col-6 text-right"><b>Enter Answer Variant: </b></label>
+                                                        <div class="col-6">
+                                                            <textarea placeholder="Answer Variant" rows="5" cols="100" style="width: 500px" id="AnswerVar" name="AnswerVar">
+                                                    @{ 
+                                                        var answerVar = answerVarList[counter];
+
+                                                            if (answerVar.Contains("[nline]"))
+                                                            {
+                                                                var split = answerVar.Split("[nline]");
+                                                                
+                                                                foreach (var i in split)
+                                                                {
+                                                                    <text>@i</text> <text>&#13;&#10</text>
+                                                                    
+                                                                }
+
+                                                            }
+                                                            else
+                                                            {
+                                                                @answerVar
+                                                            }
+                                                        
+                                                    }
+                                                </textarea>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="control-label col-6 text-right"></label>
+                                                        <div class="col-6">
+                                                            <a onclick="return DeleteEditVariant(@counter)" class="btn btn-default" id="delBtn">Delete Variant</a>
+                                                        </div>
+
+                                                    </div>
+                                                    <br /><br /><br />
+
+                                                </div>
+                                                counter++;
+                                            }
+                                        }
+                                    }
+                                </div>
+
+                                <div id="variants">
+                                    @*ajax*@
+                                </div>
+
+                                <div style="width: 900px; text-align:center">
+                                    <button type="button" id="addBtn">Add Variant</button>
+
+                                </div>
+
+
+                                <br />
+                                <br />
+                                <hr style="width: 900px" />
+                                <br />
+                                <br />
+
+                                <div class="form-group row">
+                                    <div class="offset-sm-5 col-6 col-10">
+                                        <input style="background-color: dodgerblue; color: white" type="submit" value="Update" class="btn btn-default" />
+                                        <a class="btn btn-default" style="background-color: lightgray; color: black" asp-action="AutoGenerateQn" asp-controller="ExercisePaper">Cancel</a>
+                                    </div>
+                                </div>
+                                <input asp-for="Id" hidden />
+                                <input asp-for="TopicId" hidden />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<style>
+    #addBtn {
+        display: inline-block;
+        padding: 7px 17px;
+        font-size: 17px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px #999;
+    }
+
+        #addBtn:hover {
+            background-color: #3e8e41
+        }
+
+        #addBtn:active {
+            background-color: #3e8e41;
+            box-shadow: 0 3px #666;
+            transform: translateY(2px);
+        }
+
+    #delBtn {
+        display: inline-block;
+        padding: 7px 17px;
+        font-size: 17px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: red;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px #999;
+    }
+
+        #delBtn:hover {
+            background-color: #d83c5f
+        }
+
+        #delBtn:active {
+            background-color: #d83c5f;
+            box-shadow: 0 3px #666;
+            transform: translateY(2px);
+        }
+</style>
+<script>
+    $('.form-select2').select2();
+
+    $(document).ready(function () {
+        $("#topics").select2({
+            placeholder: "Select Topics (Searchable)"
+        });
+
+        var counter = 1;
+
+        $("#addBtn").click(function () {
+            LoadVariant(counter);
+            counter++;
+        });
+    });
+
+    function LoadVariant(counter) {
+        var divVariants = $("#variants");
+        divVariants.append(
+            '<div id="variant' + counter + '">' +
+            '<div class="form-group row">' +
+            '<label class="control-label col-6 text-right"><b>Enter Figure Variant: </b></label>' +
+            '<div class="col-6">' +
+            '<textarea placeholder="Figure Variant" rows="2" cols="100" style="width: 500px" id="FigureVar" name="FigureVar"></textarea>' +
+            '</div>' +
+            '</div>' +
+            '<div class="form-group row">' +
+            '<label class="control-label col-6 text-right"><b>Enter Question Variant: </b></label>' +
+            '<div class="col-6">' +
+            '<textarea placeholder="Question Variant" rows="2" cols="100" style="width: 500px" id="QuestionVar" name="QuestionVar""></textarea>' +
+            '</div>' +
+            '</div>' +
+            '<div class="form-group row">' +
+            '<label class="control-label col-6 text-right"><b>Enter Answer Variant: </b></label>' +
+            '<div class="col-6">' +
+            '<textarea placeholder="Answer Variant" rows="2" cols="100" style="width: 500px" id="AnswerVar" name="AnswerVar"></textarea>' +
+            '</div>' +
+            '</div>' +
+            '<div class="form-group row">' + '<label class="control-label col-6 text-right"></label>' + '<div class="col-6">' +
+            '<a onclick="return DeleteVariant(' + counter + ')" class="btn btn-default" type="button" id="delBtn">Delete Variant</a>' +
+            '</div>' +
+            '</div>' +
+            '<br /><br /><br />' +
+            '</div>'
+
+        );
+    }
+
+    function DeleteVariant(counter) {
+        var divVariant = $("#variant" + counter);
+        divVariant.html("");
+    }
+
+    function DeleteEditVariant(counter) {
+        var divVariant = $("#editVariants-" + counter);
+        divVariant.html("");
+    }
+
+</script>

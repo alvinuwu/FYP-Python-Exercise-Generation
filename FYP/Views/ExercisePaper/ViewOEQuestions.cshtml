@@ -61,13 +61,58 @@
                                         @item.Topic
                                     </td>
                                     <td>
-                                        @item.Figure
+                                        @{
+                                            if (item.Figure.Contains("[nline]"))
+                                            {
+                                                var split = item.Figure.Split("[nline]");
+                                                int counter = 0;
+                                                foreach (var i in split)
+                                                {
+                                                    @split[counter]<br />
+                                                    counter++;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @item.Figure
+                                            }
+                                        }
                                     </td>
                                     <td>
-                                        @item.Question
+                                        @{
+                                            if (item.Question.Contains("[nline]"))
+                                            {
+                                                var split = item.Question.Split("[nline]");
+                                                int counter = 0;
+                                                foreach (var i in split)
+                                                {
+                                                    @split[counter]<br />
+                                                    counter++;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @item.Question
+                                            }
+                                        }
                                     </td>
                                     <td>
-                                        @item.Answer
+                                        @{
+                                            if (item.Answer.Contains("[nline]"))
+                                            {
+                                                var split = item.Question.Split("[nline]");
+                                                int counter = 0;
+                                                foreach (var i in split)
+                                                {
+                                                    @split[counter]<br />
+                                                    counter++;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @item.Answer
+                                            }
+                                        }
                                     </td>
                                     <td align="center">
                                         @{

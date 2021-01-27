@@ -21,6 +21,46 @@ namespace FYP.Controllers
             _dbContext = dbContext;
         }
 
+        [Authorize]
+        public IActionResult EditOEQuestionsTemplate(int id)
+        {
+            DbSet<OEQuestion_Templates> dboeT = _dbContext.OEQuestion_Templates;
+            OEQuestion_Templates oeT = dboeT.Where(c => c.Id == id).FirstOrDefault();
+
+            DbSet<Topics> topics = _dbContext.Topics;
+            List<Topics> model = topics.ToList();
+            ViewData["topics"] = new SelectList(model, "Id", "Name");
+
+            return View(oeT);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult EditOEQuestionsTemplate(IFormCollection form)
+        {
+            var id = form["Id"];
+            var topicId = form["TopicId"];
+            var figure = form["Figure"];
+            var question = form["Question"];
+            var answer = form["Answer"];
+            var figureVar = form["FigureVar"];
+            var questionVar = form["QuestionVar"];
+            var answerVar = form["AnswerVar"];
+
+            DbSet<OEQuestion_Templates> ex = _dbContext.OEQuestion_Templates;
+            
+
+
+
+
+
+
+
+
+
+
+            return RedirectToAction("ViewOEQuestions");
+        }
 
         [Authorize]
         public IActionResult DeleteOEQuestionsTemplate(int id)
@@ -202,10 +242,15 @@ namespace FYP.Controllers
         {
             DbSet<OEQuestions> oeQ = _dbContext.OEQuestions;
             OEQuestions oe = oeQ.Where(c => c.Id == item.Id).FirstOrDefault();
+
+            var question = item.Question.Replace(Environment.NewLine, "[nline]");
+            var figure = item.Figure.Replace(Environment.NewLine, "[nline]");
+            var answer = item.Answer.Replace(Environment.NewLine, "[nline]");
+
             oe.Id = item.Id;
-            oe.Figure = item.Figure;
-            oe.Question = item.Question;
-            oe.Answer = item.Answer;
+            oe.Figure = figure;
+            oe.Question = question;
+            oe.Answer = figure;
             oe.UseCount = item.UseCount;
             oe.Topic = item.Topic;
 

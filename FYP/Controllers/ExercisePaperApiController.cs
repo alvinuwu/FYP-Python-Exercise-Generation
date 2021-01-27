@@ -29,7 +29,31 @@ namespace FYP.Controllers
             if (topicId == 0)
             {
                 List<OEQuestion_Templates> allOEqT = oeQT.ToList();
-                return Ok(allOEqT);
+                foreach (var item in allOEqT)
+                {
+                    var figure = item.Figure.Replace("[nline]", "<br>");
+                    figure = figure.Replace("[comma]", ",");
+
+                    var question = item.Question.Replace("[nline]", "<br>");
+                    question = question.Replace("[comma]", ",");
+
+                    var answer = item.Answer.Replace("[nline]", "<br>");
+                    answer = answer.Replace("[comma]", ",");
+
+                    OEQuestion_Templates oeT = new OEQuestion_Templates();
+                    oeT.Figure = figure;
+                    oeT.Question = question;
+                    oeT.Answer = answer;
+                    oeT.FigureVar = item.FigureVar;
+                    oeT.QuestionVar = item.QuestionVar;
+                    oeT.AnswerVar = item.AnswerVar;
+                    oeT.TopicId = item.TopicId;
+                    oeT.Id = item.Id;
+
+                    reformatted.Add(oeT);
+                }
+
+                return Ok(reformatted);
             }
             else
             {
@@ -74,7 +98,30 @@ namespace FYP.Controllers
             if (topicId == 0)
             {
                 List<OEQuestions> allOEq = oeQ.ToList();
-                return Ok(allOEq);
+
+                foreach (var item in allOEq)
+                {
+                    var figure = item.Figure.Replace("[nline]", "<br>");
+                    figure = figure.Replace("[comma]", ",");
+
+                    var question = item.Question.Replace("[nline]", "<br>");
+                    question = question.Replace("[comma]", ",");
+
+                    var answer = item.Answer.Replace("[nline]", "<br>");
+                    answer = answer.Replace("[comma]", ",");
+
+                    OEQuestions oe = new OEQuestions();
+                    oe.Topic = item.Topic;
+                    oe.Figure = figure;
+                    oe.Question = question;
+                    oe.Answer = answer;
+                    oe.Id = item.Id;
+                    oe.UseCount = item.UseCount;
+
+                    reformatted.Add(oe);
+                }
+
+                return Ok(reformatted);
             }
             else
             {
@@ -84,11 +131,20 @@ namespace FYP.Controllers
                 List<OEQuestions> oeQList = oeQ.Where(c => c.Topic == topic.Name).ToList();
                 foreach (var item in oeQList)
                 {
+                    var figure = item.Figure.Replace("[nline]", "<br>");
+                    figure = figure.Replace("[comma]", ",");
+
+                    var question = item.Question.Replace("[nline]", "<br>");
+                    question = question.Replace("[comma]", ",");
+
+                    var answer = item.Answer.Replace("[nline]", "<br>");
+                    answer = answer.Replace("[comma]", ",");
+
                     OEQuestions oe = new OEQuestions();
                     oe.Topic = item.Topic;
-                    oe.Figure = item.Figure;
-                    oe.Question = item.Question;
-                    oe.Answer = item.Answer;
+                    oe.Figure = figure;
+                    oe.Question = question;
+                    oe.Answer = answer;
                     oe.Id = item.Id;
                     oe.UseCount = item.UseCount;
 
