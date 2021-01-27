@@ -38,28 +38,194 @@ namespace FYP.Controllers
         [HttpPost]
         public IActionResult EditOEQuestionsTemplate(IFormCollection form)
         {
-            var id = form["Id"];
-            var topicId = form["TopicId"];
+            var id = Int32.Parse(form["Id"]);
+            var topicId = Int32.Parse(form["TopicId"]);
             var figure = form["Figure"];
             var question = form["Question"];
             var answer = form["Answer"];
-            var figureVar = form["FigureVar"];
-            var questionVar = form["QuestionVar"];
-            var answerVar = form["AnswerVar"];
+
+            List<string> figureVarList = new List<string>();
+            List<string> questionVarList = new List<string>();
+            List<string> answerVarList = new List<string>();
+
+            for (int i = 0; i < form.Count(); i ++)
+            {
+                var figureVar = form["FigureVar[" + i + "]"].ToString();
+                if (figureVar == "")
+                {
+                    figureVar = "[=]";
+                }
+                var questionVar = form["QuestionVar[" + i + "]"].ToString();
+                if (questionVar == "")
+                {
+                    questionVar = "[=]";
+                }
+                var answerVar = form["AnswerVar[" + i + "]"].ToString();
+                if (answerVar == "")
+                {
+                    answerVar = "[=]";
+                }
+
+                figureVarList.Add(figureVar);
+                questionVarList.Add(questionVar);
+                answerVarList.Add(answerVar);
+            }
+            for (int i = 0; i < form.Count(); i++)
+            {
+                var figureVars = form["FigureVars[" + i + "]"].ToString();
+                if (figureVars == "")
+                {
+                    figureVars = "[=]";
+                }
+
+                var questionVars = form["QuestionVars[" + i + "]"].ToString();
+                if (questionVars == "")
+                {
+                    questionVars = "[=]";
+                }
+
+                var answerVars = form["AnswerVars[" + i + "]"].ToString();
+                if (answerVars == "")
+                {
+                    answerVars = "[=]";
+                }
+
+                figureVarList.Add(figureVars);
+                questionVarList.Add(questionVars);
+                answerVarList.Add(answerVars);
+            }
+            int counter = 0;
+            int totalCount = figureVarList.Count();
+            for (int i = 0; i < totalCount; i++)
+            {
+                if (figureVarList[counter].Equals("[=]") && questionVarList[counter].Equals("[=]") && answerVarList[counter].Equals("[=]"))
+                {
+                    figureVarList.Remove(figureVarList[counter]);
+                    questionVarList.Remove(questionVarList[counter]);
+                    answerVarList.Remove(answerVarList[counter]);
+                }
+                else
+                {
+                    counter++;
+                }
+            }
+
+            //var countF = figureVarList.Count();
+            //var countQ = questionVarList.Count();
+            //var countA = answerVarList.Count();
+
+            //var countList = new List<int>();
+            //countList.Add(countF);
+            //countList.Add(countQ);
+            //countList.Add(countA);
+
+            //var maxCount = 0;
+            //foreach (var obj in countList)
+            //{
+            //    if (obj > maxCount)
+            //    {
+            //        maxCount = obj;
+            //    }
+            //}
+
+            //var emptyString = "";
+            //for (int i = 0; i < maxCount; i++)
+            //{
+            //    if (figureVarList.Count() < maxCount)
+            //    {
+            //        figureVarList.Add(emptyString);
+            //    }
+            //}
+            //for (int i = 0; i < maxCount; i++)
+            //{
+            //    if (questionVarList.Count() < maxCount)
+            //    {
+            //        questionVarList.Add(emptyString);
+            //    }
+            //}
+            //for (int i = 0; i < maxCount; i++)
+            //{
+            //    if (answerVarList.Count() < maxCount)
+            //    {
+            //        answerVarList.Add(emptyString);
+            //    }
+            //}
+
+
+            var splitFigures = "";
+            var fCount = 1;
+
+            foreach (var item in figureVarList)
+            {
+                if (figureVarList.Count() == fCount)
+                {
+                    splitFigures += item.Replace(Environment.NewLine, "[nline]");
+                }
+                else if (figureVarList.Count() > fCount)
+                {
+                    splitFigures += item.Replace(Environment.NewLine, "[nline]") + "[/]";
+                }
+                fCount++;
+            }
+
+            var splitQuestions = "";
+            var qCount = 1;
+
+            foreach (var item in questionVarList)
+            {
+                if (questionVarList.Count() == qCount)
+                {
+                    splitQuestions += item.Replace(Environment.NewLine, "[nline]");
+                }
+                else if (questionVarList.Count() > qCount)
+                {
+                    splitQuestions += item.Replace(Environment.NewLine, "[nline]") + "[/]";
+                }
+                qCount++;
+            }
+
+            var splitAnswers = "";
+            var aCount = 1;
+
+            foreach (var item in answerVarList)
+            {
+                if (answerVarList.Count() == aCount)
+                {
+                    splitAnswers += item.Replace(Environment.NewLine, "[nline]");
+                }
+                else if (answerVarList.Count() > aCount)
+                {
+                    splitAnswers += item.Replace(Environment.NewLine, "[nline]") + "[/]";
+                }
+                aCount++;
+            }
+
+            splitFigures = splitFigures.Replace("[=]", "");
+            splitQuestions = splitQuestions.Replace("[=]", "");
+            splitAnswers = splitAnswers.Replace("[=]", "");
+
+
 
             DbSet<OEQuestion_Templates> ex = _dbContext.OEQuestion_Templates;
-            
+            OEQuestion_Templates oeTItem = ex.Where(o => o.TopicId == topicId).FirstOrDefault();
+            oeTItem.Figure = figure;
+            oeTItem.Question = question;
+            oeTItem.Answer = answer;
+            oeTItem.FigureVar = splitFigures;
+            oeTItem.QuestionVar = splitQuestions;
+            oeTItem.AnswerVar = splitAnswers;
 
+            if (_dbContext.SaveChanges() == 1)
+            {
+                TempData["Msg"] = "Open-Ended Template updated!";
+                TempData["MsgType"] = "success";
+            }
+            else
+            {
+                TempData["Msg"] = "Failed to update database!";
+            }
 
-
-
-
-
-
-
-
-
-            return RedirectToAction("ViewOEQuestions");
+            return RedirectToAction("AutoGenerateQn");
         }
 
         [Authorize]

@@ -151,7 +151,7 @@
                                                     <div class="form-group row">
                                                         <label class="control-label col-6 text-right"><b>Enter Figure Variant: </b></label>
                                                         <div class="col-6">
-                                                            <textarea placeholder="Figure Variant" rows="5" cols="100" style="width: 500px" id="FigureVar" name="FigureVar">
+                                                            <textarea placeholder="Figure Variant" rows="5" cols="100" style="width: 500px" id="FigureVar" name="FigureVar[@counter]">
                                                     @{ 
                                                         var figureVar = figureVarList[counter];
 
@@ -179,7 +179,7 @@
                                                     <div class="form-group row">
                                                         <label class="control-label col-6 text-right"><b>Enter Question Variant: </b></label>
                                                         <div class="col-6">
-                                                            <textarea placeholder="Question Variant" rows="5" cols="100" style="width: 500px" id="QuestionVar" name="QuestionVar">
+                                                            <textarea placeholder="Question Variant" rows="5" cols="100" style="width: 500px" id="QuestionVar" name="QuestionVar[@counter]">
                                                     @{ 
                                                         var questionVar = questionVarList[counter];
 
@@ -207,7 +207,7 @@
                                                     <div class="form-group row">
                                                         <label class="control-label col-6 text-right"><b>Enter Answer Variant: </b></label>
                                                         <div class="col-6">
-                                                            <textarea placeholder="Answer Variant" rows="5" cols="100" style="width: 500px" id="AnswerVar" name="AnswerVar">
+                                                            <textarea placeholder="Answer Variant" rows="5" cols="100" style="width: 500px" id="AnswerVar" name="AnswerVar[@counter]">
                                                     @{ 
                                                         var answerVar = answerVarList[counter];
 
@@ -242,7 +242,7 @@
                                                     <br /><br /><br />
 
                                                 </div>
-                                                counter++;
+                                                
                                             }
                                         }
                                     }
@@ -340,7 +340,7 @@
             placeholder: "Select Topics (Searchable)"
         });
 
-        var counter = 1;
+        var counter = 0;
 
         $("#addBtn").click(function () {
             LoadVariant(counter);
@@ -355,19 +355,19 @@
             '<div class="form-group row">' +
             '<label class="control-label col-6 text-right"><b>Enter Figure Variant: </b></label>' +
             '<div class="col-6">' +
-            '<textarea placeholder="Figure Variant" rows="2" cols="100" style="width: 500px" id="FigureVar" name="FigureVar"></textarea>' +
+            '<textarea placeholder="Figure Variant" rows="2" cols="100" style="width: 500px" id="FigureVar" name="FigureVars[' + counter + ']"></textarea>' +
             '</div>' +
             '</div>' +
             '<div class="form-group row">' +
             '<label class="control-label col-6 text-right"><b>Enter Question Variant: </b></label>' +
             '<div class="col-6">' +
-            '<textarea placeholder="Question Variant" rows="2" cols="100" style="width: 500px" id="QuestionVar" name="QuestionVar""></textarea>' +
+            '<textarea placeholder="Question Variant" rows="2" cols="100" style="width: 500px" id="QuestionVar" name="QuestionVars[' + counter + ']"></textarea>' +
             '</div>' +
             '</div>' +
             '<div class="form-group row">' +
             '<label class="control-label col-6 text-right"><b>Enter Answer Variant: </b></label>' +
             '<div class="col-6">' +
-            '<textarea placeholder="Answer Variant" rows="2" cols="100" style="width: 500px" id="AnswerVar" name="AnswerVar"></textarea>' +
+            '<textarea placeholder="Answer Variant" rows="2" cols="100" style="width: 500px" id="AnswerVar" name="AnswerVars[' + counter + ']"></textarea>' +
             '</div>' +
             '</div>' +
             '<div class="form-group row">' + '<label class="control-label col-6 text-right"></label>' + '<div class="col-6">' +
