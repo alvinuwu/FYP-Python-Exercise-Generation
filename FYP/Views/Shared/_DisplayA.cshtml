@@ -1,6 +1,27 @@
-﻿@Model
-
-@{ 
-    var answerString = Model;
-}
+﻿<pre style="width: 800px">
+                            @{
+                                var answer = Model;
+                                if (answer.Contains("[comma]"))
+                                {
+                                    answer.Replace("[comma]", ",");
+                                }
+                                if (answer.Contains("[nline]"))
+                                {
+                                    var split = answer.Split("[nline]");
+                                    int counter = 0;
+                                    foreach (var i in split)
+                                    {
+                                        @split[counter]<br />
+                                        counter++;
+                                    }
+                                }
+                                else
+                                {
+                                    @answer
+                                }
+                            }
+                            @{ 
+                                var answerString = Model;
+                            }
+                            </pre>
 <input value="@answerString" name="answer" class="form-control" hidden />

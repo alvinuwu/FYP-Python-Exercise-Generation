@@ -1,4 +1,4 @@
-﻿
+﻿<pre style="width: 800px">
     @{
         var question = Model;
         if (question.Contains("[comma]"))
@@ -11,7 +11,8 @@
             int counter = 0;
             foreach (var i in split)
             {
-                @split[counter]
+                @split[counter]<br />
+
                 counter++;
             }
         }
@@ -20,7 +21,7 @@
             @question
         }
     }
-
+</pre>
 @{
     var questionString = Model;
 }

@@ -212,11 +212,11 @@
     }
 
     // Set the date we're counting down to
-    var totalMins = 30;
+    var totalMins = 0.5;
 
     //1600 represents the compensation due to a delay, as the timer usually shows 3 seconds has passed even though
     //it actually counted down from the actual number. Remove if it is already accurate.
-    var endTime = new Date().getTime() + (totalMins * 100);
+    var endTime = new Date().getTime() + (totalMins * 60000 + 1600);
 
     // Update the count down every 1 second
     var x = setInterval(function () {

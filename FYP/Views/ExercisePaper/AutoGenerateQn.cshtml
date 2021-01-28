@@ -1,4 +1,7 @@
-﻿@model AutoGenerateQn
+﻿@model List<OEQuestion_Templates>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <html>
     <head>
 
@@ -14,44 +17,52 @@
 
                     <h2>@ViewData["Title"]</h2>
                     <br />
+                    @if (TempData["Msg"] != null)
+                    {
+                        <div class="form-group row">
+                            <div class="col">
+                                <div class="alert alert-@TempData["MsgType"]">
+                                    <text><b>@Html.Raw(TempData["Msg"])</b></text>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     <br />
                     <div class="container">
                         <div class="col-10">
-                            
-                                <div class="form-horizontal">
-                                    <div class="form-group row">
-                                        <label class="control-label col-2 text-left"><b>Topic : </b></label>
-                                        <div class="col-6">
-                                            <select asp-for="Topics" id="topics" class="form-control col-6" style="width: 100%; height: 100px; font-family: 'HP Simplified'"
-                                                    asp-items="@((SelectList)ViewData["topics"])">
-                                            </select>
-                                            @Html.ValidationMessageFor(d => d.Topics, null, new { @class = "text-danger" })
-                                        </div>
-                                        <br />
-                                        <br />
-                                        @*<label class="control-label col-5 text-right"><b>Maximum Usage for Question : </b></label>
-                                        <div class="col-6">
-                                            <input type="number" asp-for="UseCount" class="form-control" />
-                                        </div>*@
-                                        <br />
-                                        <br />
 
-                                        @*<label class="control-label col-2 text-right"></label>
-                                        <div class="col-6">
-                                            <button type="button" style="color:black" id="generateQ">Display Questions</button>
-                                        </div>*@
-
-                                        <br />
-                                        <br />
-                                        <hr />
-                                        <br />
-
-                                        <hr />
-
+                            <div class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="control-label col-2 text-left"><b>Topic : </b></label>
+                                    <div class="col-6">
+                                        <select id="topics" class="form-control col-6" style="font-family: 'HP Simplified'"
+                                                asp-items="@((SelectList)ViewData["topics"])">
+                                            <option id="0">All Topics</option>
+                                        </select>
                                     </div>
+                                    <br />
+                                    <br />
+                                    @*<label class="control-label col-5 text-right"><b>Maximum Usage for Question : </b></label>
+                        <div class="col-6">
+                            <input type="number" asp-for="UseCount" class="form-control" />
+                        </div>*@
+                                    <br />
+                                    <br />
+
+                                    @*<label class="control-label col-2 text-right"></label>
+                        <div class="col-6">
+                            <button type="button" style="color:black" id="generateQ">Display Questions</button>
+                        </div>*@
+
+                                    <br />
+                                    <br />
 
                                 </div>
-                            
+
+                            </div>
+
+                            <a class="btn btn-default" style="color:white; background-color:dodgerblue" asp-action="GenerateOE" asp-controller="ExercisePaper">Create Template</a>
+                            <br /><br /><br />
                             <div class="col-13">
 
                                 <table class="table table-bordered table-condensed table-hover table-striped">
@@ -61,21 +72,96 @@
                                             <th scope="col" width="30%" style="color:white">Figure</th>
                                             <th scope="col" width="20%" style="color:white">Question</th>
                                             <th scope="col" width="20%" style="color:white">Answer</th>
-                                            <th scope="col" width="5%" style="color:white">Action</th>
+                                            <th scope="col" width="15%" style="color:white">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="divQuestion">
                                         @*AJAX*@
+                                        @if (Model != null)
+                                        {
+                                            int count = 1;
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @count
+                                                    </td>
+                                                    <td>
+                                                        @{
+                                                            if (item.Figure.Contains("[nline]"))
+                                                            {
+                                                                var split = item.Figure.Split("[nline]");
+                                                                int counter = 0;
+                                                                foreach (var i in split)
+                                                                {
+                                                                    @split[counter]<br />
+                                                                    counter++;
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                @item.Figure
+                                                            }
+                                                        }
+
+                                                    </td>
+                                                    <td>
+                                                        @{
+                                                            if (item.Question.Contains("[nline]"))
+                                                            {
+                                                                var split = item.Question.Split("[nline]");
+                                                                int counter = 0;
+                                                                foreach (var i in split)
+                                                                {
+                                                                    @split[counter]<br />
+                                                                    counter++;
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                @item.Question
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @{
+                                                            if (item.Answer.Contains("[nline]"))
+                                                            {
+                                                                var split = item.Question.Split("[nline]");
+                                                                int counter = 0;
+                                                                foreach (var i in split)
+                                                                {
+                                                                    @split[counter]<br />
+                                                                    counter++;
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                @item.Answer
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td align="center">
+                                                        
+                                                            <a class="btn btn-default" href="/ExercisePaper/AutoGenerateQnPt2/?id=@item.Id&topicId=@item.TopicId" style="background-color: dodgerblue; color: white"><b>Generate</b></a> <br /><br />
+                                                            <a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" asp-controller="ExercisePaper" asp-action="EditOEQuestionsTemplate" asp-route-id="@item.Id">&#9998;</a>
+                                                            <a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" asp-controller="ExercisePaper" asp-action="DeleteOEQuestionsTemplate" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                                                        
+                                                    </td>
+                                                </tr>
+                                                count++;
+                                            }
+                                        }
                                     </tbody>
                                 </table>
 
                             </div>
                             <div class="form-group row">
                                 @*<label class="control-label col-5 text-right"></label>
-                                <div class="col-8">
-                                    <input style="background-color:dodgerblue; color:white" type="submit" value="Confirm" class="btn btn-default" />
-                                    <a class="btn btn-default" style="background-color: lightgray; color: black" asp-action="ViewOEPapers" asp-controller="Home">Cancel</a>
-                                </div>*@
+                    <div class="col-8">
+                        <input style="background-color:dodgerblue; color:white" type="submit" value="Confirm" class="btn btn-default" />
+                        <a class="btn btn-default" style="background-color: lightgray; color: black" asp-action="ViewOEPapers" asp-controller="Home">Cancel</a>
+                    </div>*@
                             </div>
                         </div>
                     </div>
@@ -84,7 +170,7 @@
         </div>
     </body>
 </html>
-<script>
+    <script>
 
 
     $(document).ready(function () {
@@ -95,14 +181,19 @@
     });
 
 
+    function ConfirmDelete() {
+        if (confirm("Are you sure you want to delete?") == false) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        }
+    }
 
     function ajaxLoadQuestion() {
         var topic = $("#topics").val();
         var apiUrl = "/api/OEQuestion/" + topic;
         var divQuestion = $("#divQuestion");
 
-        var linkString1 = '<a href="/ExercisePaper/AutoGenerateQnPt2/?id=';
-        var linkString2 = '" style="color: black"><b>Select</b></a>';
 
         divQuestion.html("");
 
@@ -113,10 +204,15 @@
                     "</td><td>" + question.figure +
                     "</td><td>" + question.question +
                     "</td><td>" + question.answer +
-                    "</td><td>" + "<button>" + linkString1 + question.id + "&topicId=" + question.topicId + linkString2 + "</button>" +
+                    '</td><td align="center">' +
+                    '<a class="btn btn-default" href="/ExercisePaper/AutoGenerateQnPt2/?id=' + question.id + '&topicId=' + question.topicId +'" style="background-color: dodgerblue; color: white"><b>Generate</b></a> <br /><br />' +
+                    '<a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" href="/ExercisePaper/EditOEQuestionsTemplate/' + question.id + '">&#9998;</a>' + " " +
+                    '<a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" href="/ExercisePaper/DeleteOEQuestionsTemplate/"' + question.id + '"><i class="fa fa-trash"></i></a>' +
+
+
                     "</td></tr>"
                 );
             });
         });
     }
-</script>
+    </script>
