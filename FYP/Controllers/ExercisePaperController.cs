@@ -10,6 +10,7 @@ using System.Security.Claims;
 using FYP.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Rotativa.AspNetCore;
 
 namespace FYP.Controllers
 {
@@ -522,20 +523,20 @@ namespace FYP.Controllers
         public IActionResult OE2(string word)
         {
             List<string> sList = new List<string>();
-            
+
             //refer to the notepad reference for the example of how this shud be
 
 
             //for (var i = 0; i < maxNum; i++) {
-                
+
             //    var pHolder = "{" + i + "}";
             //    sList.Add(pHolder);
-                    
+
             //    $("#divFigure").html("OE2?word=" + i);
-                
+
             //}
 
-            
+
             //for (var i = 0; i < maxNum; i++) {
             //    if (words.includes("{" + i + "}")) {
             //        $("#divFigure").load("OE2?word=" + i);
@@ -643,7 +644,7 @@ namespace FYP.Controllers
                         {
                             topicString = obj.Name;
                         }
-                    }                    
+                    }
                     randomTopicSelector.Add(topicString);
                 }
 
@@ -927,13 +928,34 @@ namespace FYP.Controllers
 
 
             DbSet<AppUser> dbUsers = _dbContext.AppUser;
-            List<AppUser> users = dbUsers.ToList();             
+            List<AppUser> users = dbUsers.ToList();
             ViewData["Students"] = users;
 
             return View(model);
         }
 
+        [Authorize]
+        public IActionResult PrintPaper(int id)
+        {
+            DbSet<ExercisePaper> dbs = _dbContext.ExercisePaper;
+            ExercisePaper model = dbs.Where(p => p.Id == id).FirstOrDefault();
 
+            if (model != null)
+                return new ViewAsPdf(model)
+                {
+                    PageSize = Rotativa.AspNetCore.Options.Size.B5,
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
+                };
+            else
+            {
+                TempData["Msg"] = "Paper not found!";
+                return RedirectToAction("Index");
+            }
 
-    }
+        }
 }
+
+
+
+}
+

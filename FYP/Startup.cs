@@ -11,15 +11,17 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Hosting;
 using FYP.Models;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 namespace FYP
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
             Configuration = configuration;
+            RotativaConfiguration.Setup(env);
         }
 
         public void ConfigureServices(IServiceCollection services)
