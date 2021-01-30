@@ -4,6 +4,7 @@
 }
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://kit.fontawesome.com/a076d05399.js" />
 <html>
 <head>
 
@@ -57,6 +58,8 @@
                                     <a class="btn btn-default" style="background-color:dodgerblue; color:white" asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" asp-route-id="@item.ExercisePaperId"><b>Start Paper</b></a> <br /><br />
                                     <a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" asp-controller="ExercisePaper" asp-action="EditOEQuestionsPaper" asp-route-id="@item.Id">&#9998;</a>
                                     <a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" asp-controller="ExercisePaper" asp-action="DeleteOEQuestionsPaper" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                                    <a class="btn btn-default" style="background-color:darkolivegreen; color:white;" asp-controller="ExercisePaper" asp-action="PrintPaper" asp-route-id="@item.Id">&#xf15c;</a>
+
                                 </td>
                             </tr>
                             count++;

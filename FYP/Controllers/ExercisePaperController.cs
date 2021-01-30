@@ -10,6 +10,7 @@ using System.Security.Claims;
 using FYP.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Rotativa.AspNetCore;
 
 namespace FYP.Controllers
 {
@@ -19,51 +20,6 @@ namespace FYP.Controllers
         public ExercisePaperController(AppDbContext dbContext)
         {
             _dbContext = dbContext;
-        }
-
-        [Authorize]
-        public IActionResult ViewTopics()
-        {
-            DbSet<Topics> topics = _dbContext.Topics;
-            List<Topics> model = topics.ToList();
-
-            return View(model);
-        }
-
-        [Authorize]
-        public IActionResult AddTopic()
-        {
-            return View();
-        }
-
-        [Authorize]
-        [HttpPost]
-        public IActionResult AddTopic(Topics topics)
-        {
-            DbSet<Topics> dbTopics = _dbContext.Topics;
-            List<Topics> topicList = dbTopics.ToList();
-
-            if (topicList.Where(c => c.Name.Equals(topics.Name)).Count() > 0)
-            {
-                TempData["Msg"] = "Failed to update database! Topic name already exists.";
-                TempData["MsgType"] = "danger";
-
-                return RedirectToAction("ViewTopics");
-            }
-            else
-            {
-                Topics t = new Topics();
-                t.Id = topicList.Count();
-                t.Name = topics.Name;
-
-                _dbContext.Topics.Add(t);
-                _dbContext.SaveChanges();
-
-                TempData["Msg"] = "New Topic added!";
-                TempData["MsgType"] = "success";
-
-                return RedirectToAction("ViewTopics");
-            }
         }
 
         [Authorize]
@@ -531,15 +487,6 @@ namespace FYP.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        public IActionResult EditOEQuestionsPaper()
-        {
-            //Use OExPaperList db
-
-            return View();
-        }
-
-        [Authorize]
         public IActionResult DeleteOEQuestionsPaper(int id)
         {
             DbSet<ExercisePaper> ex = _dbContext.ExercisePaper;
@@ -716,6 +663,145 @@ namespace FYP.Controllers
         }
 
         [Authorize]
+        public IActionResult GenerateOE2()
+        {
+            DbSet<Topics> topics = _dbContext.Topics;
+            List<Topics> model = topics.ToList();
+            ViewData["topics"] = new SelectList(model, "Id", "Name");
+
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult GenerateOE2(CreateExQuestion createExQuestion)
+        {
+            //CURRENTLY the variants are fixed at only 3 for every question,
+            //will need to use jQuery to make the page more dynamic, so the
+            //user can decide how many variants they want
+
+
+            if (ModelState.IsValid)
+            {
+                //setting values to be stored in the database
+                //"Environment.NewLine" detects if the string has '\r\n', to be able to replace to different value
+                var topicId = createExQuestion.Topics;
+                var question = createExQuestion.Question.Replace(Environment.NewLine, "[nline]");
+                var figure = createExQuestion.Figure.Replace(Environment.NewLine, "[nline]");
+                var answer = createExQuestion.Answer.Replace(Environment.NewLine, "[nline]");
+
+                //set variable for the Variants to be stored as a single string to be stored in the database
+                int questionCount = 1;
+                string questionVar = "";
+                foreach (var item in createExQuestion.QuestionVar)
+                {
+                    if (item != null)
+                    {
+                        var item_ = item.Replace(",", "[comma]");
+                        if (createExQuestion.QuestionVar.Count() == questionCount)
+                        {
+                            questionVar += item_.Replace(Environment.NewLine, "[nline]");
+                        }
+                        else if (createExQuestion.QuestionVar.Count() > questionCount)
+                        {
+                            questionVar += item_.Replace(Environment.NewLine, "[nline]") + ", ";
+                        }
+                        questionCount++;
+                    }
+
+                }
+
+                int figureCount = 1;
+                string figureVar = "";
+                foreach (var item in createExQuestion.FigureVar)
+                {
+                    if (item != null)
+                    {
+                        var item_ = item.Replace(",", "[comma]");
+                        if (createExQuestion.FigureVar.Count() == figureCount)
+                        {
+                            figureVar += item_.Replace(Environment.NewLine, "[nline]");
+                        }
+                        else if (createExQuestion.FigureVar.Count() > figureCount)
+                        {
+                            figureVar += item_.Replace(Environment.NewLine, "[nline]") + ", ";
+                        }
+                        figureCount++;
+                    }
+                }
+
+                int answerCount = 1;
+                string answerVar = "";
+                foreach (var item in createExQuestion.AnswerVar)
+                {
+                    if (item != null)
+                    {
+                        var item_ = item.Replace(",", "[comma]");
+                        if (createExQuestion.AnswerVar.Count() == answerCount)
+                        {
+                            answerVar += item_.Replace(Environment.NewLine, "[nline]");
+                        }
+                        else if (createExQuestion.AnswerVar.Count() > answerCount)
+                        {
+                            answerVar += item_.Replace(Environment.NewLine, "[nline]") + ", ";
+                        }
+                        answerCount++;
+                    }
+                }
+
+                OEQuestion_Templates qT = new OEQuestion_Templates();
+                qT.TopicId = topicId;
+                qT.Figure = figure;
+                qT.Question = question;
+                qT.Answer = answer;
+                qT.FigureVar = figureVar;
+                qT.QuestionVar = questionVar;
+                qT.AnswerVar = answerVar;
+                _dbContext.OEQuestion_Templates.Add(qT);
+                _dbContext.SaveChanges();
+
+
+
+                TempData["Msg"] = "New Question added!";
+                TempData["MsgType"] = "success";
+            }
+            else
+            {
+                TempData["Msg"] = "Invalid information entered";
+                TempData["MsgType"] = "danger";
+            }
+
+
+            return RedirectToAction("ViewOEPapers");
+        }
+
+        public IActionResult OE2(string word)
+        {
+            List<string> sList = new List<string>();
+
+            //refer to the notepad reference for the example of how this shud be
+
+
+            //for (var i = 0; i < maxNum; i++) {
+
+            //    var pHolder = "{" + i + "}";
+            //    sList.Add(pHolder);
+
+            //    $("#divFigure").html("OE2?word=" + i);
+
+            //}
+
+
+            //for (var i = 0; i < maxNum; i++) {
+            //    if (words.includes("{" + i + "}")) {
+            //        $("#divFigure").load("OE2?word=" + i);
+            //    }
+            //}
+
+            return PartialView("_OE2", word);
+        }
+
+        [Authorize]
         public IActionResult Create()
         {
             DbSet<Topics> topics = _dbContext.Topics;
@@ -740,11 +826,7 @@ namespace FYP.Controllers
                 List<Topics> topicsList = lstOfTopics.ToList();
                 int totalQns = createExPaper.OETotalQns;
                 int actualTotalQns = 0;
-                int idCounter = 0;
-                if (papersList.Count() > 0)
-                {
-                    idCounter = papersList[papersList.Count()].Id;  //Sets the exercisepaperId later on
-                }
+                int idCounter = papersList[papersList.Count() - 1].Id + 1;  //Sets the exercisepaperId later on
                 var topicList = "";
                 var itemString = "";
                 var i = 1;
@@ -817,7 +899,7 @@ namespace FYP.Controllers
                         {
                             topicString = obj.Name;
                         }
-                    }                    
+                    }
                     randomTopicSelector.Add(topicString);
                 }
 
@@ -1101,13 +1183,34 @@ namespace FYP.Controllers
 
 
             DbSet<AppUser> dbUsers = _dbContext.AppUser;
-            List<AppUser> users = dbUsers.ToList();             
+            List<AppUser> users = dbUsers.ToList();
             ViewData["Students"] = users;
 
             return View(model);
         }
 
+        [Authorize]
+        public IActionResult PrintPaper(int id)
+        {
+            DbSet<ExercisePaper> dbs = _dbContext.ExercisePaper;
+            ExercisePaper model = dbs.Where(p => p.Id == id).FirstOrDefault();
 
+            if (model != null)
+                return new ViewAsPdf(model)
+                {
+                    PageSize = Rotativa.AspNetCore.Options.Size.B5,
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
+                };
+            else
+            {
+                TempData["Msg"] = "Paper not found!";
+                return RedirectToAction("Index");
+            }
 
-    }
+        }
 }
+
+
+
+}
+
