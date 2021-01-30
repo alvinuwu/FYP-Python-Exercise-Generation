@@ -826,7 +826,11 @@ namespace FYP.Controllers
                 List<Topics> topicsList = lstOfTopics.ToList();
                 int totalQns = createExPaper.OETotalQns;
                 int actualTotalQns = 0;
-                int idCounter = papersList[papersList.Count() - 1].Id + 1;  //Sets the exercisepaperId later on
+                int idCounter = 0;
+                if (papersList.Count() > 0)
+                {
+                    idCounter = papersList[papersList.Count()].Id;  //Sets the exercisepaperId later on
+                }
                 var topicList = "";
                 var itemString = "";
                 var i = 1;
