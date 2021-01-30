@@ -22,6 +22,51 @@ namespace FYP.Controllers
         }
 
         [Authorize]
+        public IActionResult ViewTopics()
+        {
+            DbSet<Topics> topics = _dbContext.Topics;
+            List<Topics> model = topics.ToList();
+
+            return View(model);
+        }
+
+        [Authorize]
+        public IActionResult AddTopic()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult AddTopic(Topics topics)
+        {
+            DbSet<Topics> dbTopics = _dbContext.Topics;
+            List<Topics> topicList = dbTopics.ToList();
+
+            if (topicList.Where(c => c.Name.Equals(topics.Name)).Count() > 0)
+            {
+                TempData["Msg"] = "Failed to update database! Topic name already exists.";
+                TempData["MsgType"] = "danger";
+
+                return RedirectToAction("ViewTopics");
+            }
+            else
+            {
+                Topics t = new Topics();
+                t.Id = topicList.Count();
+                t.Name = topics.Name;
+
+                _dbContext.Topics.Add(t);
+                _dbContext.SaveChanges();
+
+                TempData["Msg"] = "New Topic added!";
+                TempData["MsgType"] = "success";
+
+                return RedirectToAction("ViewTopics");
+            }
+        }
+
+        [Authorize]
         public IActionResult EditOEQuestionsTemplate(int id)
         {
             DbSet<OEQuestion_Templates> dboeT = _dbContext.OEQuestion_Templates;

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-
+    <link rel="icon" href="~/images/fake_logo.png" />
     <!-- style sheets references -->
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 
@@ -34,6 +34,7 @@
                             <li class="dropdown nav-item">
                                 <button class="dropbtn">Open-Ended Exercises</button>
                                 <div class="dropdown-content">
+                                    <a class="nav-link" asp-action="ViewTopics" asp-controller="ExercisePaper">View Topic List</a>
                                     <a class="nav-link" asp-action="GenerateOE" asp-controller="ExercisePaper">Create Template</a>
                                     <a class="nav-link" asp-action="AutoGenerateQn" asp-controller="ExercisePaper">Auto Generate Questions</a>
                                     <a class="nav-link" asp-action="ViewOEQuestions" asp-controller="ExercisePaper">View All Questions</a>
