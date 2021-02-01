@@ -335,12 +335,17 @@ namespace FYP.Controllers
             var question = form["question"];
             var answer = form["answer"];
             var checkCount = form["useCount"];
+            var checkDifficulty = form["difficulty"];
             var useCount = 0;
             if (!checkCount.Equals(""))
             {
                 useCount = Int32.Parse(form["useCount"]);
             }
-
+            var difficulty = 0;
+            if (!checkCount.Equals(""))
+            {
+                difficulty = Int32.Parse(form["difficulty"]);
+            }
             OEQuestions oeQuestions = new OEQuestions();
             oeQuestions.Figure = figure;
             oeQuestions.Question = question;
@@ -354,7 +359,14 @@ namespace FYP.Controllers
             {
                 oeQuestions.UseCount = null;
             }
-
+            if (difficulty != 0)
+            {
+                oeQuestions.Difficulty = difficulty;
+            }
+            else
+            {
+                oeQuestions.Difficulty = 3;
+            }
             _dbContext.OEQuestions.Add(oeQuestions);
             _dbContext.SaveChanges();
 
@@ -465,6 +477,7 @@ namespace FYP.Controllers
             oe.Answer = figure;
             oe.UseCount = item.UseCount;
             oe.Topic = item.Topic;
+            oe.Difficulty = item.Difficulty;
 
             if (_dbContext.SaveChanges() == 1)
             {
@@ -754,6 +767,7 @@ namespace FYP.Controllers
                 int actualTotalQns = 0;
                 int idCounter = 0;
                 int? time = 30;
+                int? difficulty = 0;
                 if (createExPaper.Time != null)
                 {
                     time = createExPaper.Time;
@@ -882,6 +896,9 @@ namespace FYP.Controllers
 
                     foreach (var obj in chosen)
                     {
+                        //Add difficulty
+                        difficulty += obj.Difficulty;
+
                         //NEED TO GROUP Figure + FigureVar, Question + QuestionVar, Answer + AnswerVar
                         #region Combine figure, question, and answer
                         var figure_ = obj.Figure;
@@ -958,6 +975,7 @@ namespace FYP.Controllers
                 eP.TotalQns = actualTotalQns;
                 eP.ExercisePaperId = idCounter;
                 eP.Time = time;
+                eP.Difficulty = difficulty;
                 _dbContext.ExercisePaper.Add(eP);
                 _dbContext.SaveChanges();
 
@@ -1116,7 +1134,7 @@ namespace FYP.Controllers
                     }
                     else if (answerList.Count() > counter)
                     {
-                        answerString += item.Replace(Environment.NewLine, "[nline]") + "[=]";
+                        answerString += item.Replace(Environment.NewLine, "[nline]") + "[/]";
                     }
                     counter++;
                 }

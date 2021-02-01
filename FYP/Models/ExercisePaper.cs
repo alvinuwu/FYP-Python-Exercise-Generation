@@ -13,5 +13,7 @@ namespace FYP.Models
         public int ExercisePaperId { get; set; }
 
         public int? Time { get; set; }
+
+        public int? Difficulty { get; set; }
     }
 }

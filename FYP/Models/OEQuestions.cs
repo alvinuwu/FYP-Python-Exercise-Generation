@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FYP.Models
 {
@@ -11,6 +12,7 @@ namespace FYP.Models
         public string Figure { get; set; }
         public string Answer { get; set; }
         public int? UseCount { get; set; }
+        public int? Difficulty { get; set; }
 
     }
 }

@@ -43,6 +43,7 @@
                             <th scope="col" width="15%" style="color:white">Question</th>
                             <th scope="col" width="10%" style="color:white">Answer</th>
                             <th scope="col" width="3%" style="color:white">Max. Use</th>
+                            <th scope="col" width="3%" style="color:white">Difficulty</th>
                             <th scope="col" width="7%" style="color:white"><p align="center">Action</p></th>
                         </tr>
                     </thead>
@@ -53,84 +54,87 @@
                             int count = 1;
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <td>
-                                        @count
-                                    </td>
-                                    <td>
-                                        @item.Topic
-                                    </td>
-                                    <td>
-                                        @{
-                                            if (item.Figure.Contains("[nline]"))
-                                            {
-                                                var split = item.Figure.Split("[nline]");
-                                                int counter = 0;
-                                                foreach (var i in split)
-                                                {
-                                                    @split[counter]<br />
-                                                    counter++;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                @item.Figure
-                                            }
+                        <tr>
+                            <td>
+                                @count
+                            </td>
+                            <td>
+                                @item.Topic
+                            </td>
+                            <td>
+                                @{
+                                    if (item.Figure.Contains("[nline]"))
+                                    {
+                                        var split = item.Figure.Split("[nline]");
+                                        int counter = 0;
+                                        foreach (var i in split)
+                                        {
+                                            @split[counter]<br />
+                                            counter++;
                                         }
-                                    </td>
-                                    <td>
-                                        @{
-                                            if (item.Question.Contains("[nline]"))
-                                            {
-                                                var split = item.Question.Split("[nline]");
-                                                int counter = 0;
-                                                foreach (var i in split)
-                                                {
-                                                    @split[counter]<br />
-                                                    counter++;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                @item.Question
-                                            }
+                                    }
+                                    else
+                                    {
+                                        @item.Figure
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    if (item.Question.Contains("[nline]"))
+                                    {
+                                        var split = item.Question.Split("[nline]");
+                                        int counter = 0;
+                                        foreach (var i in split)
+                                        {
+                                            @split[counter]<br />
+                                            counter++;
                                         }
-                                    </td>
-                                    <td>
-                                        @{
-                                            if (item.Answer.Contains("[nline]"))
-                                            {
-                                                var split = item.Question.Split("[nline]");
-                                                int counter = 0;
-                                                foreach (var i in split)
-                                                {
-                                                    @split[counter]<br />
-                                                    counter++;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                @item.Answer
-                                            }
+                                    }
+                                    else
+                                    {
+                                        @item.Question
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    if (item.Answer.Contains("[nline]"))
+                                    {
+                                        var split = item.Question.Split("[nline]");
+                                        int counter = 0;
+                                        foreach (var i in split)
+                                        {
+                                            @split[counter]<br />
+                                            counter++;
                                         }
-                                    </td>
-                                    <td align="center">
-                                        @{
-                                            if (item.UseCount == null)
-                                            {
-                                                <text><b style="font-size: 20px">&infin;</b></text>
-                                            }
-                                            else
-                                            {
-                                                <text>@item.UseCount</text>
-                                            }
-                                        }
-                                    </td>
-                                    <td align="center">
-                                        <a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" asp-controller="ExercisePaper" asp-action="EditOEQuestions" asp-route-id="@item.Id">&#9998;</a>
-                                        <a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" asp-controller="ExercisePaper" asp-action="DeleteOEQuestions" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
-                                    </td>
-                                </tr>
+                                    }
+                                    else
+                                    {
+                                        @item.Answer
+                                    }
+                                }
+                            </td>
+                            <td align="center">
+                                @{
+                                    if (item.UseCount == null)
+                                    {
+                                        <text><b style="font-size: 20px">&infin;</b></text>
+                                    }
+                                    else
+                                    {
+                                        <text>@item.UseCount</text>
+                                    }
+                                }
+                            </td>
+                            <td align="center">
+                                @item.Difficulty
+                            </td>
+                            <td align="center">
+                                <a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" asp-controller="ExercisePaper" asp-action="EditOEQuestions" asp-route-id="@item.Id">&#9998;</a>  <br /><br />
+                                <a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" asp-controller="ExercisePaper" asp-action="DeleteOEQuestions" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
                                 count++;
                             }
                         }

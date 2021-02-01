@@ -39,6 +39,8 @@
                                             {
                                                 @split[counter]<br />
 
+
+
                                                 counter++;
                                             }
                                         }
@@ -46,11 +48,15 @@
                                         {
                                             @figure<br />
 
+
+
                                         }
                                     }<br /><br />
 
+
+
                                 </pre>
-                            @{ 
+                            @{
                                 var figureString = Model.Figure;
                             }
                             <input value="@figureString" name="figure" class="form-control" hidden />
@@ -69,6 +75,8 @@
                                     {
                                         @split[counter]<br />
 
+
+
                                         counter++;
                                     }
                                 }
@@ -81,13 +89,15 @@
                                 var questionString = Model.Question;
                             }<br /><br />
 
+
+
                             </pre>
                             <input value="@questionString" name="question" class="form-control" hidden />
                         </div>
                         <br />
                         <hr />
                         <b>Answer</b>:<br />
-                        <div class="offset-1 col-6 calibriFont" id="answer" >
+                        <div class="offset-1 col-6 calibriFont" id="answer">
                             <pre style="width: 800px">
                             @{
                                 var answer = Model.Answer;
@@ -98,6 +108,7 @@
                                     foreach (var i in split)
                                     {
                                         @split[counter]<br />
+
                                         counter++;
                                     }
                                 }
@@ -109,6 +120,7 @@
                             @{ 
                                 var answerString = Model.Answer;
                             }<br /><br />
+
                             </pre>
                             <input value="@answerString" name="answer" class="form-control" hidden />
                         </div>
@@ -122,8 +134,12 @@
                         <input type="number" id="useCount" name="useCount" class="form-control" />
                     </div>
                     <br />
+                    <label class="control-label col-5 text-left"><b>Difficulty (1-5) : </b></label>
+                    <div class="col-3">
+                        <input type="number" id="difficulty" name="difficulty" min="1" max="5" class="form-control" />
+                    </div>
                     <br />
-
+                    <br />
                     <div class="col-8">
                         <input style="background-color:dodgerblue; color:white" type="submit" value="Add Question" class="btn btn-default" />
                         <a class="btn btn-default" style="background-color: lightgray; color: black" asp-action="AutoGenerateQn" asp-controller="ExercisePaper">Cancel</a>

@@ -45,6 +45,12 @@
                                         <input asp-for="Topic" value="@Model.Topic" class="form-control" hidden />
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-5 text-right"><b>Difficulty (1-5): </b></label>
+                                    <div class="col-6">
+                                        <input type="number" min="1" max="5" asp-for="Difficulty" value="@Model.Difficulty" class="form-control" />
+                                    </div>
+                                </div>
                                 <br />
 
                                 <div class="form-group row">
