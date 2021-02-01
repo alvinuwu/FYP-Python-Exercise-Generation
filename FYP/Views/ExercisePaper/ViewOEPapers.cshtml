@@ -59,8 +59,14 @@
                         @item.Time
                     </td>
                     <td align="center">
-
-                        <a class="btn btn-default" style="background-color:dodgerblue; color:white" asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" asp-route-id="@item.ExercisePaperId"><b>Start Paper</b></a> <br /><br />
+                        @if (User.IsInRole("Admin") || User.IsInRole("Lecturer"))
+                        {
+                            <a class="btn btn-default" style="background-color:dodgerblue; color:white" asp-controller="ExercisePaper" asp-action="Preview" asp-route-id="@item.ExercisePaperId" target="_blank"><b>Preview</b></a> <br /><br />
+                        }
+                        @if (User.IsInRole("Student"))
+                        {
+                            <a class="btn btn-default" style="background-color:dodgerblue; color:white" asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" asp-route-id="@item.ExercisePaperId"><b>Start Paper</b></a> <br /><br />
+                        }
                         <a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" asp-controller="ExercisePaper" asp-action="EditOEQuestionsPaper" asp-route-id="@item.ExercisePaperId">&#9998;</a>
                         <a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" asp-controller="ExercisePaper" asp-action="DeleteOEQuestionsPaper" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
                         <a class="btn btn-default" style="background-color:moccasin; color:gray;" asp-controller="ExercisePaper" asp-action="PrintPaper" asp-route-id="@item.ExercisePaperId" target="_blank"><i class="far fa-file-alt"></i></a>

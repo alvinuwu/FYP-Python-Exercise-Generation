@@ -80,7 +80,6 @@ namespace FYP.Controllers
 
 
             return Ok(reformatted);
-            //return PartialView("_DisplayQn", model);
         }
 
         [HttpGet("2/{topicId}")]
@@ -142,7 +141,6 @@ namespace FYP.Controllers
 
 
             return Ok(reformatted);
-            //return PartialView("_DisplayQn", model);
         }
 
         [HttpGet("3/{oeQid}/{exercisePaperId}")]
@@ -160,56 +158,61 @@ namespace FYP.Controllers
             DbSet<OEQuestionsPaper> oeqP = _dbContext.OEQuestionsPaper;
             List<OEQuestionsPaper> oeqPList = oeqP.ToList();
 
-            if (!(oeqPList.Where(c => c.Id == oeQid).Count() > 0))
+            if (oeQItem.UseCount < 1)
             {
-                OEQuestionsPaper oeqpS = new OEQuestionsPaper();
-                oeqpS.Question = oeQItem.Question;
-                oeqpS.Figure = oeQItem.Figure;
-                oeqpS.Answer = oeQItem.Answer;
-                oeqpS.Topic = oeQItem.Topic;
+                if (!(oeqPList.Where(c => c.Id == oeQid).Count() > 0))
+                {
+                    OEQuestionsPaper oeqpS = new OEQuestionsPaper();
+                    oeqpS.Question = oeQItem.Question;
+                    oeqpS.Figure = oeQItem.Figure;
+                    oeqpS.Answer = oeQItem.Answer;
+                    oeqpS.Topic = oeQItem.Topic;
 
-                if (exPList.Count() == 0)
+                    if (exPList.Count() == 0)
+                    {
+                        OExPaperList expItem = new OExPaperList();
+                        expItem.ExercisePaperId = exercisePaperId;
+                        expItem.OEQuestionId = oeQid;
+                        _dbContext.OExPaperList.Add(expItem);
+                    }
+
+
+                    _dbContext.OEQuestionsPaper.Add(oeqpS);
+
+                }
+                else
                 {
                     OExPaperList expItem = new OExPaperList();
                     expItem.ExercisePaperId = exercisePaperId;
                     expItem.OEQuestionId = oeQid;
                     _dbContext.OExPaperList.Add(expItem);
                 }
+                exppList.TotalQns = exppList.TotalQns + 1;
 
+                _dbContext.ExercisePaper.Update(exppList);
+                _dbContext.SaveChanges();
 
-                _dbContext.OEQuestionsPaper.Add(oeqpS);
+                var figure = oeQItem.Figure.Replace("[nline]", "<br>");
 
+                var question = oeQItem.Question.Replace("[nline]", "<br>");
+
+                var answer = oeQItem.Answer.Replace("[nline]", "<br>");
+
+                OEQuestions oe = new OEQuestions();
+                oe.Topic = oeQItem.Topic;
+                oe.Figure = figure;
+                oe.Question = question;
+                oe.Answer = answer;
+                oe.Id = oeQItem.Id;
+                oe.UseCount = oeQItem.UseCount;
+
+                oeQItem.UseCount = oeQItem.UseCount - 1;
+                _dbContext.OEQuestions.Update(oeQItem);
+                _dbContext.SaveChanges();
+
+                return Ok(oe);
             }
-            else
-            {
-                OExPaperList expItem = new OExPaperList();
-                expItem.ExercisePaperId = exercisePaperId;
-                expItem.OEQuestionId = oeQid;
-                _dbContext.OExPaperList.Add(expItem);
-            }
-            exppList.TotalQns = exppList.TotalQns + 1;
-
-            _dbContext.ExercisePaper.Update(exppList);
-            _dbContext.SaveChanges();
-
-            var figure = oeQItem.Figure.Replace("[nline]", "<br>");
-
-            var question = oeQItem.Question.Replace("[nline]", "<br>");
-
-            var answer = oeQItem.Answer.Replace("[nline]", "<br>");
-
-            OEQuestions oe = new OEQuestions();
-            oe.Topic = oeQItem.Topic;
-            oe.Figure = figure;
-            oe.Question = question;
-            oe.Answer = answer;
-            oe.Id = oeQItem.Id;
-            oe.UseCount = oeQItem.UseCount;
-
-
-
-            return Ok(oe);
-            //return PartialView("_DisplayQn", model);
+            return Ok();
         }
 
         [HttpGet("4/{id}")]
@@ -219,12 +222,12 @@ namespace FYP.Controllers
             DbSet<Topics> topics = _dbContext.Topics;
             List<Topics> topicList = topics.ToList();
             var topic = topicList.Where(c => c.Id.Equals(id)).FirstOrDefault();
-            List<OEQuestions> oeQList = oeQT.Where(c => c.Topic == topic.Name).ToList();
+            List<OEQuestions> oeQList = oeQT.Where(c => c.Topic == topic.Name && c.UseCount > 0).ToList();
             List<OEQuestions> reformatted = new List<OEQuestions>();
 
             if (topic.Id == 0)
             {
-                List<OEQuestions> allOEq = oeQT.ToList();
+                List<OEQuestions> allOEq = oeQT.Where(c => c.UseCount > 0).ToList();
 
                 foreach (var item in allOEq)
                 {
@@ -279,8 +282,13 @@ namespace FYP.Controllers
             DbSet<OExPaperList> exP = _dbContext.OExPaperList;
             OExPaperList expItem = exP.Where(c => c.ExercisePaperId == exercisePaperId && c.OEQuestionId == oeQid).FirstOrDefault();
 
+            DbSet<OEQuestions> oeQT = _dbContext.OEQuestions;
+            OEQuestions oeQitem = oeQT.Where(c => c.Id == oeQid).FirstOrDefault();
+
+            oeQitem.UseCount = oeQitem.UseCount + 1;
 
             exppList.TotalQns = exppList.TotalQns - 1;
+            
 
             _dbContext.ExercisePaper.Update(exppList);
             if (expItem != null)

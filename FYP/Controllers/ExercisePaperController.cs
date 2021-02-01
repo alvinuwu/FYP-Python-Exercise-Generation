@@ -844,7 +844,7 @@ namespace FYP.Controllers
                 //For each topic, add in questions
                 foreach (var item in selectedTopics)
                 {
-                    List<OEQuestions> oeQList = oeQT.Where(c => c.Topic == item).ToList();
+                    List<OEQuestions> oeQList = oeQT.Where(c => c.Topic == item && c.UseCount > 0).ToList();
                     List<OEQuestions> chosen = new List<OEQuestions>();
                     List<int> topicTotalQns = new List<int>();
                     int noOfQns = oeQList.Count();
@@ -927,7 +927,11 @@ namespace FYP.Controllers
                         oeQ.Answer = answer_;
                         oeQ.Topic = topic.Name.ToString();
 
+                        
+                        obj.UseCount = obj.UseCount - 1;
+
                         //Insert into db
+                        _dbContext.OEQuestions.Update(obj);
                         _dbContext.OEQuestionsPaper.Add(oeQ);
                         _dbContext.SaveChanges();
 
@@ -970,7 +974,50 @@ namespace FYP.Controllers
             return RedirectToAction("ViewOEPapers");
         }
 
-        [Authorize(Roles = "Lecturer,Admin,Student")]
+        [Authorize(Roles = "Lecturer,Admin")]
+        public IActionResult Preview(int id)
+        {
+            DbSet<OEQuestionsPaper> dbsOEQuestions = _dbContext.OEQuestionsPaper;
+            List<OEQuestionsPaper> questionList = dbsOEQuestions.ToList();
+            DbSet<OExPaperList> dbsOExPaperList = _dbContext.OExPaperList;
+            List<OExPaperList> paperList = dbsOExPaperList.ToList();
+            DbSet<ExercisePaper> dbsExercisePaper = _dbContext.ExercisePaper;
+            List<ExercisePaper> exercisePaperList = dbsExercisePaper.ToList();
+
+            List<OEQuestionsPaper> model = new List<OEQuestionsPaper>();
+            List<int> questionNums = new List<int>();
+            var filteredList = paperList.Where(c => c.ExercisePaperId == id).ToList();
+
+            foreach (var item in filteredList)
+            {
+                questionNums.Add(item.OEQuestionId);
+            }
+
+            foreach (var item in questionNums)
+            {
+                foreach (var x in questionList)
+                {
+                    if (x.Id == item)
+                    {
+                        OEQuestionsPaper oeQ = new OEQuestionsPaper();
+                        oeQ.Id = x.Id;
+                        oeQ.Question = x.Question;
+                        oeQ.Figure = x.Figure;
+                        oeQ.Answer = x.Answer;
+                        oeQ.Topic = x.Topic;
+                        model.Add(oeQ);
+                    }
+                }
+            }
+            var filterExPaper = exercisePaperList.Where(o => o.ExercisePaperId == id).ToList();
+            ViewData["exercisePaperId"] = id;
+            ViewData["ExercisePaperName"] = filterExPaper[0].Name;
+            ViewData["TopicsList"] = filterExPaper[0].Topics;
+
+            return View(model);
+        }
+
+        [Authorize]
         public IActionResult GenerateExercisePaper(int id)
         {
             DbSet<OEQuestionsPaper> dbsOEQuestions = _dbContext.OEQuestionsPaper;
@@ -1030,7 +1077,7 @@ namespace FYP.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Lecturer,Admin,Student")]
+        [Authorize]
         [HttpPost]
         public IActionResult GenerateExercisePaper(IFormCollection form)
         {
@@ -1065,15 +1112,14 @@ namespace FYP.Controllers
                 {
                     if (answerList.Count() == counter)
                     {
-                        answerString += item;
+                        answerString += item.Replace(Environment.NewLine, "[nline]");
                     }
                     else if (answerList.Count() > counter)
                     {
-                        answerString += item + ", ";
+                        answerString += item.Replace(Environment.NewLine, "[nline]") + "[=]";
                     }
                     counter++;
                 }
-
             }
 
             DbSet<ExercisePaper> dbExercisePaper = _dbContext.ExercisePaper;
