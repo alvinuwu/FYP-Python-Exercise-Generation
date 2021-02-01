@@ -1,10 +1,6 @@
 ﻿<pre style="width: 800px">
     @{
         var question = Model;
-        if (question.Contains("[comma]"))
-        {
-            question.Replace("[comma]", ",");
-        }
         if (question.Contains("[nline]"))
         {
             var split = question.Split("[nline]");

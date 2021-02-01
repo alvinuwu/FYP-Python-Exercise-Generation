@@ -31,10 +31,6 @@
                             <pre style="width: 800px">
                                     @{
                                         var figure = Model.Figure;
-                                        if (figure.Contains("[comma]"))
-                                        {
-                                            figure.Replace("[comma]", ",");
-                                        }
                                         if (figure.Contains("[nline]"))
                                         {
                                             var split = figure.Split("[nline]");
@@ -65,10 +61,6 @@
                             <pre style="width: 800px">
                             @{
                                 var question = Model.Question;
-                                if (question.Contains("[comma]"))
-                                {
-                                    question.Replace("[comma]", ",");
-                                }
                                 if (question.Contains("[nline]"))
                                 {
                                     var split = question.Split("[nline]");
@@ -99,10 +91,6 @@
                             <pre style="width: 800px">
                             @{
                                 var answer = Model.Answer;
-                                if (answer.Contains("[comma]"))
-                                {
-                                    answer.Replace("[comma]", ",");
-                                }
                                 if (answer.Contains("[nline]"))
                                 {
                                     var split = answer.Split("[nline]");

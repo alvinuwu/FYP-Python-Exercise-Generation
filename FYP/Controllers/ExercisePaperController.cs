@@ -22,7 +22,7 @@ namespace FYP.Controllers
             _dbContext = dbContext;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult ViewTopics()
         {
             DbSet<Topics> topics = _dbContext.Topics;
@@ -31,13 +31,13 @@ namespace FYP.Controllers
             return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult AddTopic()
         {
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         [HttpPost]
         public IActionResult AddTopic(Topics topics)
         {
@@ -67,20 +67,20 @@ namespace FYP.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult EditOEQuestionsTemplate(int id)
         {
             DbSet<OEQuestion_Templates> dboeT = _dbContext.OEQuestion_Templates;
             OEQuestion_Templates oeT = dboeT.Where(c => c.Id == id).FirstOrDefault();
 
             DbSet<Topics> topics = _dbContext.Topics;
-            List<Topics> model = topics.ToList();
+            List<Topics> model = topics.Where(c => c.Id != 0).ToList();
             ViewData["topics"] = new SelectList(model, "Id", "Name");
 
             return View(oeT);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         [HttpPost]
         public IActionResult EditOEQuestionsTemplate(IFormCollection form)
         {
@@ -94,7 +94,7 @@ namespace FYP.Controllers
             List<string> questionVarList = new List<string>();
             List<string> answerVarList = new List<string>();
 
-            for (int i = 0; i < form.Count(); i ++)
+            for (int i = 0; i < form.Count(); i++)
             {
                 var figureVar = form["FigureVar[" + i + "]"].ToString();
                 if (figureVar == "")
@@ -274,7 +274,7 @@ namespace FYP.Controllers
             return RedirectToAction("AutoGenerateQn");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult DeleteOEQuestionsTemplate(int id)
         {
             DbSet<OEQuestion_Templates> ex = _dbContext.OEQuestion_Templates;
@@ -300,7 +300,7 @@ namespace FYP.Controllers
             return RedirectToAction("AutoGenerateQn");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult AutoGenerateQn()
         {
             DbSet<Topics> topics = _dbContext.Topics;
@@ -312,7 +312,7 @@ namespace FYP.Controllers
             return View(oeQTList);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult AutoGenerateQnPt2(int id, int topicId)
         {
             DbSet<OEQuestion_Templates> oeQT = _dbContext.OEQuestion_Templates;
@@ -323,7 +323,7 @@ namespace FYP.Controllers
             return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         [HttpPost]
         public IActionResult AutoGenerateQnPt2(IFormCollection form)
         {
@@ -361,7 +361,7 @@ namespace FYP.Controllers
             TempData["Msg"] = "New Open-Ended Question added!";
             TempData["MsgType"] = "success";
 
-            return RedirectToAction("ViewOEQuestions");
+            return RedirectToAction("AutoGenerateQn");
         }
 
         public IActionResult RandomiseOEF(int id, int rand)
@@ -426,20 +426,20 @@ namespace FYP.Controllers
             return PartialView("_DisplayA", answer);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult ViewOEQuestions()
         {
             DbSet<OEQuestions> oeQ = _dbContext.OEQuestions;
             List<OEQuestions> oeList = oeQ.ToList();
 
             DbSet<Topics> topics = _dbContext.Topics;
-            List<Topics> model = topics.ToList();
+            List<Topics> model = topics.Where(c => c.Id != 0).ToList();
             ViewData["topics"] = new SelectList(model, "Id", "Name");
 
             return View(oeList);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult EditOEQuestions(int id)
         {
             DbSet<OEQuestions> oeQ = _dbContext.OEQuestions;
@@ -448,7 +448,7 @@ namespace FYP.Controllers
             return View(oe);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         [HttpPost]
         public IActionResult EditOEQuestions(OEQuestions item)
         {
@@ -479,7 +479,7 @@ namespace FYP.Controllers
             return RedirectToAction("ViewOEQuestions");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult DeleteOEQuestions(int id)
         {
             DbSet<OEQuestions> oeQ = _dbContext.OEQuestions;
@@ -505,7 +505,7 @@ namespace FYP.Controllers
             return RedirectToAction("ViewOEQuestions");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult ViewOEPapers()
         {
             DbSet<ExercisePaper> dbs = _dbContext.ExercisePaper;
@@ -522,16 +522,36 @@ namespace FYP.Controllers
             return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult EditOEQuestionsPaper(int id)
         {
-            DbSet<OEQuestionsPaper> exP = _dbContext.OEQuestionsPaper;
-            List<OEQuestionsPaper> ex = exP.Where(c => c.Id == id).ToList();
+            ViewData["ExercisePaperId"] = id;
+            DbSet<OExPaperList> exPl = _dbContext.OExPaperList;
+            List<OExPaperList> exl = exPl.Where(c => c.ExercisePaperId == id).ToList();
 
-            return View(ex);
+            DbSet<OEQuestionsPaper> exP = _dbContext.OEQuestionsPaper;
+            List<OEQuestionsPaper> newList = new List<OEQuestionsPaper>();
+
+            foreach (var item in exl)
+            {
+                var exQid = item.OEQuestionId;
+                OEQuestionsPaper ex = exP.Where(c => c.Id == exQid).FirstOrDefault();
+                newList.Add(ex);
+            }
+
+            DbSet<ExercisePaper> dbsExercisePaper = _dbContext.ExercisePaper;
+            List<ExercisePaper> exercisePaperList = dbsExercisePaper.ToList();
+            var filterExPaper = exercisePaperList.Where(o => o.ExercisePaperId == id).ToList();
+            ViewData["ExercisePaperName"] = filterExPaper[0].Name;
+
+            DbSet<Topics> topics = _dbContext.Topics;
+            List<Topics> model = topics.ToList();
+            ViewData["topics"] = new SelectList(model, "Id", "Name");
+
+            return View(newList);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult DeleteOEQuestionsPaper(int id)
         {
             DbSet<ExercisePaper> ex = _dbContext.ExercisePaper;
@@ -557,17 +577,17 @@ namespace FYP.Controllers
             return RedirectToAction("ViewOEPapers");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult GenerateOE()
         {
             DbSet<Topics> topics = _dbContext.Topics;
-            List<Topics> model = topics.ToList();
+            List<Topics> model = topics.Where(c => c.Id != 0).ToList();
             ViewData["topics"] = new SelectList(model, "Id", "Name");
 
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         [HttpPost]
         public IActionResult GenerateOE(CreateExQuestion createExQuestion)
         {
@@ -707,17 +727,17 @@ namespace FYP.Controllers
             return RedirectToAction("AutoGenerateQn");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult Create()
         {
             DbSet<Topics> topics = _dbContext.Topics;
-            List<Topics> model = topics.ToList();
+            List<Topics> model = topics.Where(c => c.Id != 0).ToList();
             ViewData["topics"] = new SelectList(model, "Id", "Name");
 
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         [HttpPost]
         public IActionResult Create(CreateExPaper createExPaper)
         {
@@ -733,9 +753,15 @@ namespace FYP.Controllers
                 int totalQns = createExPaper.OETotalQns;
                 int actualTotalQns = 0;
                 int idCounter = 0;
+                int? time = 30;
+                if (createExPaper.Time != null)
+                {
+                    time = createExPaper.Time;
+                }
+
                 if (papersList.Count() > 0)
                 {
-                    idCounter = papersList[papersList.Count()].Id;  //Sets the exercisepaperId later on
+                    idCounter = papersList[papersList.Count() - 1].Id + 1;  //Sets the exercisepaperId later on
                 }
                 var topicList = "";
                 var itemString = "";
@@ -885,8 +911,17 @@ namespace FYP.Controllers
                         var topicName = item;                                                //Topic
                         var topic = topicsList.Where(m => m.Name.Equals(topicName)).FirstOrDefault();
 
+                        //Set questionID inside exercise paper db
+                        DbSet<OEQuestionsPaper> oeQuestions = _dbContext.OEQuestionsPaper;
+                        List<OEQuestionsPaper> oeQuestionsList = oeQuestions.ToList();
+
                         //Insert values into type of OEQuestionsPaper
                         OEQuestionsPaper oeQ = new OEQuestionsPaper();                               //Type OEQuestionsPaper to store data of the same type
+                        oeQ.Id = 1;
+                        if (oeQuestionsList.Count() > 0)
+                        {
+                            oeQ.Id = oeQuestionsList[oeQuestionsList.Count() - 1].Id + 1;
+                        }
                         oeQ.Figure = figure_;
                         oeQ.Question = question_;
                         oeQ.Answer = answer_;
@@ -896,13 +931,11 @@ namespace FYP.Controllers
                         _dbContext.OEQuestionsPaper.Add(oeQ);
                         _dbContext.SaveChanges();
 
-                        //Set questionID inside exercise paper db
-                        DbSet<OEQuestionsPaper> oeQuestions = _dbContext.OEQuestionsPaper;
-                        List<OEQuestionsPaper> oeQuestionsList = oeQuestions.ToList();
-
-                        var oeCount = oeQuestionsList.Count() - 1;
-                        var questionId = oeQuestionsList[oeCount].Id; //checks for the last item in db (most recent added)
-
+                        var questionId = 1;
+                        if (oeQuestionsList.Count() > 0)
+                        {
+                            questionId = oeQuestionsList[oeQuestionsList.Count() - 1].Id + 1; //checks for the last item in db (most recent added)
+                        }
                         //initialise exercise paper list
                         OExPaperList exercisePaper = new OExPaperList();
                         exercisePaper.ExercisePaperId = idCounter;
@@ -920,6 +953,7 @@ namespace FYP.Controllers
                 eP.Topics = topicList;
                 eP.TotalQns = actualTotalQns;
                 eP.ExercisePaperId = idCounter;
+                eP.Time = time;
                 _dbContext.ExercisePaper.Add(eP);
                 _dbContext.SaveChanges();
 
@@ -936,7 +970,7 @@ namespace FYP.Controllers
             return RedirectToAction("ViewOEPapers");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin,Student")]
         public IActionResult GenerateExercisePaper(int id)
         {
             DbSet<OEQuestionsPaper> dbsOEQuestions = _dbContext.OEQuestionsPaper;
@@ -991,11 +1025,12 @@ namespace FYP.Controllers
             ViewData["exercisePaperId"] = id;
             ViewData["ExercisePaperName"] = filterExPaper[0].Name;
             ViewData["TopicsList"] = filterExPaper[0].Topics;
+            ViewData["Timer"] = filterExPaper[0].Time;
 
             return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin,Student")]
         [HttpPost]
         public IActionResult GenerateExercisePaper(IFormCollection form)
         {
@@ -1075,6 +1110,7 @@ namespace FYP.Controllers
             return RedirectToAction("ViewOEPapers");
         }
 
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult PaperList()
         {
             DbSet<ExercisePaper> dbs = _dbContext.ExercisePaper;
@@ -1083,6 +1119,7 @@ namespace FYP.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult StudentList(int id)
         {
             DbSet<SubmitPaper> dbs = _dbContext.SubmitPaper;
@@ -1099,17 +1136,50 @@ namespace FYP.Controllers
             return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult PrintPaper(int id)
         {
-            DbSet<ExercisePaper> dbs = _dbContext.ExercisePaper;
-            ExercisePaper model = dbs.Where(p => p.Id == id).FirstOrDefault();
+            DbSet<OEQuestionsPaper> dbsOEQuestions = _dbContext.OEQuestionsPaper;
+            List<OEQuestionsPaper> questionList = dbsOEQuestions.ToList();
+            DbSet<OExPaperList> dbsOExPaperList = _dbContext.OExPaperList;
+            List<OExPaperList> paperList = dbsOExPaperList.ToList();
+            DbSet<ExercisePaper> dbsExercisePaper = _dbContext.ExercisePaper;
+            List<ExercisePaper> exercisePaperList = dbsExercisePaper.ToList();
+
+            List<OEQuestionsPaper> model = new List<OEQuestionsPaper>();
+            List<int> questionNums = new List<int>();
+            var filteredList = paperList.Where(c => c.ExercisePaperId == id).ToList();
+
+            foreach (var item in filteredList)
+            {
+                questionNums.Add(item.OEQuestionId);
+            }
+
+            foreach (var item in questionNums)
+            {
+                foreach (var x in questionList)
+                {
+                    if (x.Id == item)
+                    {
+                        OEQuestionsPaper oeQ = new OEQuestionsPaper();
+                        oeQ.Id = x.Id;
+                        oeQ.Question = x.Question;
+                        oeQ.Figure = x.Figure;
+                        oeQ.Answer = x.Answer;
+                        oeQ.Topic = x.Topic;
+                        model.Add(oeQ);
+                    }
+                }
+            }
+            var filterExPaper = exercisePaperList.Where(o => o.ExercisePaperId == id).ToList();
+
+
 
             if (model != null)
                 return new ViewAsPdf(model)
                 {
-                    PageSize = Rotativa.AspNetCore.Options.Size.B5,
-                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
+                    PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait
                 };
             else
             {
@@ -1118,7 +1188,7 @@ namespace FYP.Controllers
             }
 
         }
-}
+    }
 
 
 

@@ -1,4 +1,4 @@
-﻿@model FYP.Models.CreateExPaper
+﻿@model CreateExPaper
 <head>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
@@ -42,12 +42,13 @@
                                     @Html.ValidationMessageFor(d => d.OETotalQns, null, new { @class = "text-danger" })
                                 </div>
                             </div>
-                            @*<div class="form-group row">
-                                <label class="control-label col-5 text-right"><b>Total Questions (MCQ): </b></label>
+                            <div class="form-group row">
+                                <label class="control-label col-5 text-right"><b>Test Time: </b></label>
                                 <div class="col-6">
-                                    <input type="number" min="1" max="30" asp-for="____" class="form-control" style="width: 50%" />
+                                    <input type="number" placeholder="(Minutes)" asp-for="Time" class="form-control" style="width: 50%" />
+                                    @Html.ValidationMessageFor(d => d.Time, null, new { @class = "text-danger" })
                                 </div>
-                            </div>*@
+                            </div>
                             <div class="form-group row">
                                 <div class="offset-sm-5 col-6 col-10">
                                     <input type="submit" value="Generate" class="btn btn-default" />

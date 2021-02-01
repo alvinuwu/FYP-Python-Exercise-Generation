@@ -1,5 +1,159 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    Layout = null;
 }
+@model List<OEQuestionsPaper>
+@{
+    ViewBag.Title = "Exercise Paper";
+}
+
+<div id="tab" class="tab-pane">
+    <div class="panel-body">
+        <div style="padding: 20px">
+            <div class="row">
+                <div class="col-6">
+                    <form name="theForm" asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" method="post" class="form-horizontal" role="form">
+                        <div class="form" style="width: 1000px">
+                            <br /><br />
+                            <p class="header"><b>Python Open-Ended Questions</b></p>
+
+                            <br />
+                            <hr class="line" />
+                            <br /><br />
+                            @if (Model != null)
+                            {
+                                int k = 0;
+                                @foreach (var item in Model)
+                                {
+                                    <div class="form-group row">
+                                        <label class="col-2 control-label text-sm-right"></label>
+                                        <div class="col-8">
+                                            <div><b><u>Question @(k + 1)</u></b></div>
+                                            <br />
+                                            <div>
+                                                <pre>
+                  
+                                                
+                                                @{
+                                                    var figure = item.Figure;
+                                                    if (figure.Contains("[nline]"))
+                                                    {
+                                                        var split = figure.Split("[nline]");
+                                                        int counter = 0;
+                                                        foreach (var i in split)
+                                                        {
+                                                            @split[counter]<br />
+                                                            counter++;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @figure<br />
+                                                    }
+                                                }
+                                            </pre>
+                                            </div>
+                                            <div>
+                                                <pre class="calibriFont">
+                                                @{
+                                                    var question = item.Question;
+                                                    if (question.Contains("[nline]"))
+                                                    {
+                                                        var split = question.Split("[nline]");
+                                                        int counter = 0;
+                                                        foreach (var i in split)
+                                                        {
+                                                            @split[counter]
+                                                            counter++;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @question
+                                                    }
+                                                }
+                                            </pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    //textarea for students' answer
+                                    <div class="form-group row">
+                                        <label class="col-2 control-label text-sm-right">Answer: </label>
+                                        <div class="col-8">
+                                            <textarea name="answer[@k]" id="answer" class="answer" rows="11" cols="60"></textarea>
+                                            <br />
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    k++;
+                                }
+                            }
+
+                            <br />
+                            <hr class="line" />
+                            <br /><br />
+
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <br /><br /><br />
+        </div>
+    </div>
+</div>
+
+<style>
+    .calibriFont {
+        font-family: 'Calibri';
+        font-size: 18px
+    }
+
+    hr.line {
+        border-top: 2px solid black;
+        width: 1000px;
+        margin-top: 0px;
+    }
+
+    p.header {
+        width: 900px;
+        text-align: right;
+        color: darkgray;
+        margin-bottom: 0px;
+    }
+
+    p.topics {
+        color: black;
+        margin-bottom: 0px;
+        font-size: 19px;
+    }
+
+    p.timer {
+        text-align: center;
+        font-size: 60px;
+        margin-top: 0px;
+    }
+</style>
+
+<script>
+
+
+    $(document).ready(function () {
+
+
+
+
+    });
+
+    function ConfirmDelete() {
+        if (confirm("Are you sure you want to delete?") == false) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        }
+    }
+
+
+
+</script>

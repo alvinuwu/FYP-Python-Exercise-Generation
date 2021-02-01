@@ -11,5 +11,7 @@ namespace FYP.Models
 
         public int TotalQns { get; set; }
         public int ExercisePaperId { get; set; }
+
+        public int? Time { get; set; }
     }
 }

@@ -12,18 +12,20 @@
             </div>
         </div>
     }
-    <h2 class="form-signin-heading">Please Sign In</h2>
-    <div class="col-5">
+    <br /><br /><br />
+    <h2 class="offset-4 col-5-text-left form-signin-heading">Login</h2>
+
+    <div class="offset-4 col-5">
         <div class="form-group row">
-            <label asp-for="UserId" class="control-label">User ID :</label>
-            <input asp-for="UserId" class="form-control" placeholder="Your registered user id" />
+            <label asp-for="UserId" class="control-label" style="font-family:'HP Simplified'">User ID :</label>
+            <input asp-for="UserId" class="form-control" style="font-family:'HP Simplified'" placeholder="Your registered user id" />
             <div class="col-3">
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group row">
-            <label asp-for="Password" class="control-label">Password :</label>
-            <input asp-for="Password" class="form-control" placeholder="Password" />
+            <label asp-for="Password" class="control-label" style="font-family:'HP Simplified'">Password :</label>
+            <input asp-for="Password" class="form-control" style="font-family:'HP Simplified'" placeholder="Password" />
             <div class="col-3">
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>

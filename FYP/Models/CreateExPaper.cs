@@ -17,5 +17,8 @@ namespace FYP.Models
         [Required(ErrorMessage = "At least one question required")]
         [Range(1, 30, ErrorMessage ="Only 30 questions maximum can be selected")]
         public int OETotalQns { get; set; }
+
+        [Range(0, 500, ErrorMessage = "The time set cannot be a negative value!")]
+        public int? Time { get; set; }
     }
 }

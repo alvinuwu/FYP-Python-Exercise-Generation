@@ -4,6 +4,8 @@
 }
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://kit.fontawesome.com/a076d05399.js" />
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
 <html>
 <head>
 
@@ -28,9 +30,10 @@
                 <table id="exercisePaperTable" class="table table-bordered table-condensed table-hover table-striped">
                     <tr style="background-color:darkblue">
                         <th scope="col" width="2%" style="color:white">#</th>
-                        <th scope="col" width="30%" style="color:white">Name</th>
+                        <th scope="col" width="20%" style="color:white">Name</th>
                         <th scope="col" width="20%" style="color:white">Topics</th>
                         <th scope="col" width="10%" style="color:white">Total Questions</th>
+                        <th scope="col" width="5%" style="color:white">Paper Duration (Minutes)</th>
                         <th scope="col" width="10%" style="color:white"><p align="center">Action</p></th>
                     </tr>
 
@@ -39,28 +42,31 @@
                         int count = 1;
                         @foreach (var item in Model)
                         {
-                            <tr>
-                                <td>
-                                    @count
-                                </td>
-                                <td>
-                                    @item.Name
-                                </td>
-                                <td>
-                                    @item.Topics
-                                </td>
-                                <td align="center">
-                                    @item.TotalQns
-                                </td>
-                                <td align="center">
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Topics
+                    </td>
+                    <td align="center">
+                        @item.TotalQns
+                    </td>
+                    <td align="center">
+                        @item.Time
+                    </td>
+                    <td align="center">
 
-                                    <a class="btn btn-default" style="background-color:dodgerblue; color:white" asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" asp-route-id="@item.ExercisePaperId"><b>Start Paper</b></a> <br /><br />
-                                    <a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" asp-controller="ExercisePaper" asp-action="EditOEQuestionsPaper" asp-route-id="@item.Id">&#9998;</a>
-                                    <a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" asp-controller="ExercisePaper" asp-action="DeleteOEQuestionsPaper" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
-                                    <a class="btn btn-default" style="background-color:darkolivegreen; color:white;" asp-controller="ExercisePaper" asp-action="PrintPaper" asp-route-id="@item.Id">&#xf15c;</a>
+                        <a class="btn btn-default" style="background-color:dodgerblue; color:white" asp-controller="ExercisePaper" asp-action="GenerateExercisePaper" asp-route-id="@item.ExercisePaperId"><b>Start Paper</b></a> <br /><br />
+                        <a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" asp-controller="ExercisePaper" asp-action="EditOEQuestionsPaper" asp-route-id="@item.ExercisePaperId">&#9998;</a>
+                        <a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" asp-controller="ExercisePaper" asp-action="DeleteOEQuestionsPaper" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                        <a class="btn btn-default" style="background-color:moccasin; color:gray;" asp-controller="ExercisePaper" asp-action="PrintPaper" asp-route-id="@item.ExercisePaperId" target="_blank"><i class="far fa-file-alt"></i></a>
 
-                                </td>
-                            </tr>
+                    </td>
+                </tr>
                             count++;
                         }
                     }
