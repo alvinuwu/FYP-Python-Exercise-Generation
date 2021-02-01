@@ -1,0 +1,87 @@
+﻿@model List<AppUser>
+<html>
+<head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://kit.fontawesome.com/a076d05399.js" />
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+
+</head>
+<body>
+    @{
+        ViewBag.Title = "Manage Users";
+    }
+
+    <h2>@ViewData["Title"]</h2>
+
+    <div id="tab" class="tab-pane">
+        <div class="panel-body">
+            <div class="form-group row">
+                
+                    <br />
+                    <br />
+                    <div class="container">
+                        <div class="col-12">
+
+                            <div class="form-horizontal">
+
+                                <h3 style="display: inline-block">Users List</h3>
+                                <a asp-controller="Home" asp-action="CreateUser" class="btn btn-default" style="margin-top:10px;float:right;background-color: dodgerblue;color: white" value="Create User">Create User</a>
+                                <br />
+
+                                <hr />
+                                @if (TempData["Msg"] != null)
+                                {
+                                    <div class="form-group row">
+                                        <div class="col">
+                                            <div class="alert alert-@TempData["MsgType"]">
+                                                <text><b>@Html.Raw(TempData["Msg"])</b></text>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                           
+                            <div class="col-13">
+
+                                <table class="table table-bordered table-condensed table-hover table-striped">
+                                    <thead>
+                                        <tr style="background-color:darkblue">
+                                            <th scope="col" width="20%" style="color:white">Name</th>
+                                            <th scope="col" width="20%" style="color:white">Role</th>
+                                            <th scope="col" width="20%" style="color:white">Class</th>
+                                            <th scope="col" width="5%" style="color:white">Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="divQuestion">
+                                       @foreach (AppUser user in Model)
+                                       {
+                                        <tr>
+                                            <td>
+                                                @user.Name
+                                            </td>
+                                            <td>
+                                                @user.Role
+                                            </td>
+                                            <td>
+                                                @user.Class
+                                            </td>
+                                            <td>
+                                                @user.Email
+                                            </td>
+                                        </tr>
+                                       }
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+       
+   
+
+</body>
+</html>

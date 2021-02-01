@@ -6,7 +6,24 @@
 <div id="tab" class="tab-pane">
     <div class="panel-body">
         <div class="accordion" style="padding: 20px">
-            <h2>Welcome, @User.Identity.Name</h2>
+            @if (User.IsInRole("Admin"))
+            {
+                <h2>
+                    Hello, Admin @User.Identity.Name
+                </h2>
+            }
+            else if (User.IsInRole("Lecturer"))
+            {
+                <h2>
+                    Hello, Lecturer @User.Identity.Name
+                </h2>
+            }
+            else if (User.IsInRole("Student"))
+            {
+                <h2>
+                    Hello, Student @User.Identity.Name
+                </h2>
+            }
         </div>
     </div>
     <br />

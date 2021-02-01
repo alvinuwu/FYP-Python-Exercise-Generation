@@ -9,5 +9,7 @@ namespace FYP.Models
         public string Name { get; set; }
         public byte[] Password { get; set; }
         public string Role { get; set; }
+        public string Class { get; set; }
+        public string Email { get; set; }
     }
 }

@@ -13,6 +13,6 @@ namespace FYP.Models
         public string Answer { get; set; }
         public int? UseCount { get; set; }
         public int? Difficulty { get; set; }
-
+        public int? Marks { get; set; }
     }
 }

@@ -11,6 +11,8 @@ using FYP.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Rotativa.AspNetCore;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace FYP.Controllers
 {
@@ -336,21 +338,28 @@ namespace FYP.Controllers
             var answer = form["answer"];
             var checkCount = form["useCount"];
             var checkDifficulty = form["difficulty"];
+            var checkMarks = form["marks"];
             var useCount = 0;
             if (!checkCount.Equals(""))
             {
                 useCount = Int32.Parse(form["useCount"]);
             }
             var difficulty = 0;
-            if (!checkCount.Equals(""))
+            if (!checkDifficulty.Equals(""))
             {
                 difficulty = Int32.Parse(form["difficulty"]);
+            }
+            var marks = 2;
+            if (!checkMarks.Equals(""))
+            {
+                marks = Int32.Parse(form["marks"]);
             }
             OEQuestions oeQuestions = new OEQuestions();
             oeQuestions.Figure = figure;
             oeQuestions.Question = question;
             oeQuestions.Answer = answer;
             oeQuestions.Topic = topic.Name;
+            oeQuestions.Marks = marks;
             if (useCount != 0)
             {
                 oeQuestions.UseCount = useCount;
@@ -367,6 +376,7 @@ namespace FYP.Controllers
             {
                 oeQuestions.Difficulty = 3;
             }
+
             _dbContext.OEQuestions.Add(oeQuestions);
             _dbContext.SaveChanges();
 
@@ -981,6 +991,15 @@ namespace FYP.Controllers
 
                 TempData["Msg"] = "Exercise Paper [" + createExPaper.Name + "] added!";
                 TempData["MsgType"] = "success";
+
+                var currentUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                DbSet<AppUser> appUsers = _dbContext.AppUser;
+                AppUser user = appUsers.Where(c => c.Id == currentUser).FirstOrDefault();
+                
+
+                var expName = createExPaper.Name;
+                SendEmail(expName, user.Class);
             }
             else
             {
@@ -1252,6 +1271,48 @@ namespace FYP.Controllers
             }
 
         }
+
+        [Authorize(Roles = "Lecturer,Admin")]
+        public IActionResult SendEmail(string expName, string classOf)
+        {
+
+            DbSet<AppUser> appUsers = _dbContext.AppUser;
+            List<AppUser> userList = appUsers.Where(c => c.Class == classOf && c.Role.Equals("Student")).ToList();
+
+            var message = new MimeMessage();
+
+            //Send FROM
+            message.From.Add(new MailboxAddress("PQ", "pythongenerationexercise@gmail.com"));
+
+            //Send TO
+            foreach (var item in userList)
+            {
+                message.To.Add(new MailboxAddress(item.Name, item.Email));
+            }
+
+            //Message Subject
+            message.Subject = "New Exercise Paper [" + expName + "] Published!";
+
+            //Body
+            message.Body = new TextPart("plain")
+            {
+                Text = "A new exercise paper [" + expName + "] has been released, please check your exercise paper list to start the paper."
+            };
+
+
+
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, false);
+                client.Authenticate("pythongenerationexercise@gmail.com", "Abcd123$");
+                client.Send(message);
+                client.Disconnect(true);
+            }
+
+            return Ok();
+        }
+
+
     }
 
 
