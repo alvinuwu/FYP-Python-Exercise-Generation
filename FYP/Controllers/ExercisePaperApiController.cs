@@ -107,6 +107,7 @@ namespace FYP.Controllers
                     oe.Answer = answer;
                     oe.Id = item.Id;
                     oe.UseCount = item.UseCount;
+                    oe.Difficulty = item.Difficulty;
 
                     reformatted.Add(oe);
                 }
@@ -134,6 +135,7 @@ namespace FYP.Controllers
                     oe.Answer = answer;
                     oe.Id = item.Id;
                     oe.UseCount = item.UseCount;
+                    oe.Difficulty = item.Difficulty;
 
                     reformatted.Add(oe);
                 }

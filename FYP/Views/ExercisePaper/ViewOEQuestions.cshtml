@@ -183,6 +183,7 @@
                     "</td><td>" + question.question +
                     "</td><td>" + question.answer +
                     '</td><td align="center">' + (question.useCount == null ? '<text><b style="font-size: 20px">&infin;</b></text>' : question.useCount) +
+                    "</td><td>" + question.difficulty +
                     '</td><td align="center">' +
                     '<a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" href="/ExercisePaper/EditOEQuestions/' + question.id + '">&#9998;</a>' + " " +
                     '<a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" href="/ExercisePaper/DeleteOEQuestions/"' + question.id + '"><i class="fa fa-trash"></i></a>' +
