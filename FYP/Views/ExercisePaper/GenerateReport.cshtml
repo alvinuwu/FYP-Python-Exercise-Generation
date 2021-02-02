@@ -1,0 +1,40 @@
+﻿@{
+    Layout = null;
+}
+@model List<SubmitPaper>
+@{
+    ViewBag.Title = "Exercise Paper";
+}
+
+<table>
+    <thead>
+        <tr style="background-color:darkblue">
+            <th scope="col" width="10%" style="color:white">Exercise Paper Id</th>
+            <th scope="col" width="10%" style="color:white">Attempts</th>
+            <th scope="col" width="10%" style="color:white"><p align="center">Grade Score</p></th>
+        </tr>
+    </thead>
+    <tbody id="divQuestion">
+        @*AJAX*@
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.ExercisePaperId
+                    </td>
+                    <td>
+                        @item.Attempts
+                    </td>
+                    <td align="center">
+                        @item.Grade
+                    </td>
+                </tr>
+            }
+
+        }
+
+    </tbody>
+
+</table>

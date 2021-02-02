@@ -1,0 +1,140 @@
+﻿@model string[]
+@{
+    ViewBag.Title = "Exercise Papers";
+}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<html>
+<head>
+
+</head>
+<body>
+    <div id="tab" class="tab-pane">
+        <div class="panel-body">
+            <div style="padding: 20px">
+                <h2>Open-Ended Questions List</h2>
+                <br />
+                <br />
+                @if (TempData["Msg"] != null)
+                {
+                    <div class="form-group row">
+                        <div class="col">
+                            <div class="alert alert-@TempData["MsgType"]">
+                                <text><b>@Html.Raw(TempData["Msg"])</b></text>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <br />
+                <br />
+                <form asp-controller="ExercisePaper" asp-action="GradePage" method="post" class="form-horizontal" role="form">
+                    <div>
+                        <input type="text" name="submitPaperId" value="@ViewData["id"]" hidden />
+                    </div>
+                    <table id="exercisePaperTable" class="table table-bordered table-condensed table-hover table-striped">
+                        <thead>
+                            <tr style="background-color:darkblue">
+                                <th scope="col" width="2%" style="color:white">#</th>
+                                <th scope="col" width="40%" style="color:white">Answer</th>
+                                <th scope="col" width="7%" style="color:white"><p align="center">Action</p></th>
+                            </tr>
+                        </thead>
+                        <tbody id="divQuestion">
+                            @*AJAX*@
+                            @if (Model != null)
+                            {
+                                int count = 0;
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @count
+                                        </td>
+                                        <td>
+                                            @{
+                                                if (item.Contains("[nline]"))
+                                                {
+                                                    var split = item.Split("[nline]");
+                                                    int counter = 0;
+                                                    foreach (var i in split)
+                                                    {
+                                                        @split[counter]<br />
+                                                        counter++;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    @item
+                                                }
+                                            }
+                                        </td>
+                                        <td align="center">
+                                            <input type="number" name="Grade[@count]" class="form-control" style="width: 50%" />
+                                            
+                                        </td>
+                                    </tr>
+                                    count++;
+                                }
+
+                            }
+
+                        </tbody>
+
+                    </table>
+                    <br /><br />
+                    <div class="col-8">
+                        <input style="background-color:dodgerblue; color:white" type="submit" value="Submit" class="btn btn-default" />
+                    </div><br />
+                </form>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+</style>
+
+<script>
+    function ConfirmDelete() {
+        if (confirm("Are you sure you want to delete?") == false) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        }
+    }
+
+    $(document).ready(function () {
+
+        $("#topics").change(ajaxLoadQuestion);
+    });
+
+
+
+    function ajaxLoadQuestion() {
+        var topic = $("#topics").val();
+        var apiUrl = "/api/OEQuestion/2/" + topic;
+        var divQuestion = $("#divQuestion");
+
+        divQuestion.html("");
+
+        $.getJSON(apiUrl, function (result) {
+            $.each(result, function (i, question) {
+                divQuestion.append(
+                    "<tr><td>" + (i + 1) +
+                    "</td><td>" + question.topic +
+                    "</td><td>" + question.figure +
+                    "</td><td>" + question.question +
+                    "</td><td>" + question.answer +
+                    '</td><td align="center">' + (question.useCount == null ? '<text><b style="font-size: 20px">&infin;</b></text>' : question.useCount) +
+                    '</td><td align="center">' +
+                    '<a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" href="/ExercisePaper/EditOEQuestions/' + question.id + '">&#9998;</a>' + " " +
+                    '<a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" href="/ExercisePaper/DeleteOEQuestions/"' + question.id + '"><i class="fa fa-trash"></i></a>' +
+                    "</td></tr>"
+                );
+            });
+        });
+    }
+</script>

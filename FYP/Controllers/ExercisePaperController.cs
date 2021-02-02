@@ -528,7 +528,7 @@ namespace FYP.Controllers
             return RedirectToAction("ViewOEQuestions");
         }
 
-        [Authorize(Roles = "Lecturer,Admin")]
+        [Authorize]
         public IActionResult ViewOEPapers()
         {
             DbSet<ExercisePaper> dbs = _dbContext.ExercisePaper;
@@ -1220,6 +1220,52 @@ namespace FYP.Controllers
         }
 
         [Authorize(Roles = "Lecturer,Admin")]
+        public IActionResult GradePage(int id)
+        {
+            DbSet<SubmitPaper> dbs = _dbContext.SubmitPaper;
+            SubmitPaper model = dbs.Where(c => c.Id == id).FirstOrDefault();
+            List<string> ansString = new List<string>();
+
+            var answers = model.Answers.Split("[/]");
+
+            DbSet<AppUser> dbUsers = _dbContext.AppUser;
+            List<AppUser> users = dbUsers.ToList();
+            ViewData["id"] = model.Id;
+
+            return View(answers);
+        }
+
+        [Authorize(Roles = "Lecturer,Admin")]
+        [HttpPost]
+        public IActionResult GradePage(IFormCollection form)
+        {
+            List<int> gradeList = new List<int>();
+            for (int i = 0; i < form.Count()-2; i++)
+            {
+                gradeList.Add(Int32.Parse(form["Grade[" + i + "]"]));
+            }
+            var totalGrade = 0;
+            foreach (var item in gradeList)
+            {
+                totalGrade += item;
+            }
+            var submitPaperId = Int32.Parse(form["submitPaperId"]);
+
+            DbSet<SubmitPaper> dbSubmit = _dbContext.SubmitPaper;
+            SubmitPaper submitPaper = dbSubmit.Where(c => c.Id == submitPaperId).FirstOrDefault();
+
+            submitPaper.Grade = totalGrade;
+
+            _dbContext.SaveChanges();
+
+            DbSet<AppUser> dbUsers = _dbContext.AppUser;
+            List<AppUser> users = dbUsers.ToList();
+            ViewData["Students"] = users;
+
+            return RedirectToAction("PaperList");
+        }
+
+        [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult PrintPaper(int id)
         {
             DbSet<OEQuestionsPaper> dbsOEQuestions = _dbContext.OEQuestionsPaper;
@@ -1312,6 +1358,26 @@ namespace FYP.Controllers
             return Ok();
         }
 
+
+        public IActionResult GenerateReport()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            DbSet<SubmitPaper> submitPapers = _dbContext.SubmitPaper;
+            List<SubmitPaper> report = submitPapers.Where(c => c.SubmittedBy == userId).ToList();
+
+            if (report != null)
+                return new ViewAsPdf(report)
+                {
+                    PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait
+                };
+            else
+            {
+                TempData["Msg"] = "Paper not found!";
+                return RedirectToAction("Index");
+            }
+
+        }
 
     }
 

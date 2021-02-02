@@ -14,5 +14,7 @@ namespace FYP.Models
         public int Attempts { get; set; }
 
         public string SubmittedBy { get; set; }
+
+        public int? Grade { get; set; }
     }
 }
