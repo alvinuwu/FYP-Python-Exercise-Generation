@@ -1,66 +1,70 @@
 ﻿@model CreateExPaper
+
 <head>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 </head>
-<div id="tab" class="tab-pane">
-    <div class="panel-body">
-        <div style="padding: 20px">
+<div class="container py-5">
+    <div class="card shadow-sm p-4 mx-auto" style="max-width: 700px;">
+@*         @{
+            ViewBag.Title = "Generate New Paper";
+        }
+        <h2 class="text-center text-primary mb-4">@ViewData["Title"]</h2> *@
 
-            @{
-                ViewBag.Title = "Generate New Paper";
-            }
+        <!-- Page Title -->
+        <div class="text-center mb-4">
+            <h1 class="fw-bold text-primary">Create Exercise Paper</h1>
+            <p class="text-muted">Fill out the details below to generate a new exercise paper</p>
+        </div>
 
-            <h2>@ViewData["Title"]</h2>
-            <br />
-            <br />
-            <div class="container">
-                <div class="col-6">
-                    <form asp-controller="ExercisePaper" asp-action="Create" method="post" class="form-horizontal" role="form">
-                        <div class="form-horizontal">
-                            <div class="form-group row">
-                                <label class="control-label col-5 text-right"><b>Exercise Paper Name : </b></label>
-                                <div class="col-6">
-                                    <input asp-for="Name" class="form-control" style="width: 150%" />
-                                    @Html.ValidationMessageFor(d => d.Name, null, new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-5 text-right"><b>Topics : </b></label>
-                                <div class="col-6">
-                                    <select asp-for="Topics" id="topics" class="form-control col-6" multiple="multiple" style="width: 150%"
-                                            asp-items="@((SelectList)ViewData["topics"])">
-                                    </select>
-                                    @*@Html.DropDownListFor(m => m.Id, (SelectList)ViewData["topics"], htmlAttributes: new { @id = "topics", @class = "form-control form-select2 ", style = "width: 150%", multiple = "multiple" })*@
-                                    @Html.ValidationMessageFor(d => d.Topics, null, new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-5 text-right"><b>Open-Ended Questions: </b></label>
-                                <div class="col-6">
-                                    <input type="number" asp-for="OETotalQns" class="form-control" style="width: 50%" />
-                                    @Html.ValidationMessageFor(d => d.OETotalQns, null, new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-5 text-right"><b>Test Time: </b></label>
-                                <div class="col-6">
-                                    <input type="number" placeholder="(Minutes)" asp-for="Time" class="form-control" style="width: 50%" />
-                                    @Html.ValidationMessageFor(d => d.Time, null, new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="offset-sm-5 col-6 col-10">
-                                    <input type="submit" value="Generate" class="btn btn-default" />
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+        <form asp-controller="ExercisePaper" asp-action="Create" method="post" class="needs-validation" novalidate>
+            <!-- Exercise Paper Name -->
+            <div class="mb-4 row">
+                <label asp-for="Name" class="col-sm-4 col-form-label fw-semibold text-end">Exercise Paper Name:</label>
+                <div class="col-sm-8">
+                    <input asp-for="Name" class="form-control" placeholder="Enter paper name" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
             </div>
-        </div>
+
+            <!-- Topics (Select2) -->
+            <div class="mb-4 row">
+                <label asp-for="Topics" class="col-sm-4 col-form-label fw-semibold text-end">Topics:</label>
+                <div class="col-sm-8">
+                    <select asp-for="Topics" id="topics" class="form-control" multiple="multiple"
+                            asp-items="@((SelectList)ViewData["topics"])">
+                    </select>
+                    <span asp-validation-for="Topics" class="text-danger small"></span>
+                    @Html.ValidationMessageFor(d => d.Topics, null, new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <!-- Open-Ended Questions -->
+            <div class="mb-4 row">
+                <label asp-for="OETotalQns" class="col-sm-4 col-form-label fw-semibold text-end">Open-Ended Questions:</label>
+                <div class="col-sm-8">
+                    <input type="number" asp-for="OETotalQns" class="form-control" placeholder="Number of questions" />
+                    <span asp-validation-for="OETotalQns" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Test Time -->
+            <div class="mb-4 row">
+                <label asp-for="Time" class="col-sm-4 col-form-label fw-semibold text-end">Test Time (minutes):</label>
+                <div class="col-sm-8">
+                    <input type="number" asp-for="Time" class="form-control" placeholder="Enter test duration" />
+                    <span asp-validation-for="Time" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg px-5 shadow">Generate</button>
+            </div>
+        </form>
     </div>
 </div>
+
 <script>
     $('.form-select2').select2();
 

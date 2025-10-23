@@ -944,11 +944,11 @@ namespace FYP.Controllers
 
                         //Insert values into type of OEQuestionsPaper
                         OEQuestionsPaper oeQ = new OEQuestionsPaper();                               //Type OEQuestionsPaper to store data of the same type
-                        oeQ.Id = 1;
-                        if (oeQuestionsList.Count() > 0)
-                        {
-                            oeQ.Id = oeQuestionsList[oeQuestionsList.Count() - 1].Id + 1;
-                        }
+                        //oeQ.Id = 1;
+                        //if (oeQuestionsList.Count() > 0)
+                        //{
+                        //    oeQ.Id = oeQuestionsList[oeQuestionsList.Count() - 1].Id + 1;
+                        //}
                         oeQ.Figure = figure_;
                         oeQ.Question = question_;
                         oeQ.Answer = answer_;
@@ -999,7 +999,7 @@ namespace FYP.Controllers
                 
 
                 var expName = createExPaper.Name;
-                SendEmail(expName, user.Class);
+                //SendEmail(expName, user.Class);
             }
             else
             {
@@ -1268,54 +1268,33 @@ namespace FYP.Controllers
         [Authorize(Roles = "Lecturer,Admin")]
         public IActionResult PrintPaper(int id)
         {
-            DbSet<OEQuestionsPaper> dbsOEQuestions = _dbContext.OEQuestionsPaper;
-            List<OEQuestionsPaper> questionList = dbsOEQuestions.ToList();
-            DbSet<OExPaperList> dbsOExPaperList = _dbContext.OExPaperList;
-            List<OExPaperList> paperList = dbsOExPaperList.ToList();
-            DbSet<ExercisePaper> dbsExercisePaper = _dbContext.ExercisePaper;
-            List<ExercisePaper> exercisePaperList = dbsExercisePaper.ToList();
-
-            List<OEQuestionsPaper> model = new List<OEQuestionsPaper>();
-            List<int> questionNums = new List<int>();
-            var filteredList = paperList.Where(c => c.ExercisePaperId == id).ToList();
-
-            foreach (var item in filteredList)
-            {
-                questionNums.Add(item.OEQuestionId);
-            }
-
-            foreach (var item in questionNums)
-            {
-                foreach (var x in questionList)
-                {
-                    if (x.Id == item)
-                    {
-                        OEQuestionsPaper oeQ = new OEQuestionsPaper();
-                        oeQ.Id = x.Id;
-                        oeQ.Question = x.Question;
-                        oeQ.Figure = x.Figure;
-                        oeQ.Answer = x.Answer;
-                        oeQ.Topic = x.Topic;
-                        model.Add(oeQ);
-                    }
-                }
-            }
-            var filterExPaper = exercisePaperList.Where(o => o.ExercisePaperId == id).ToList();
-
-
-
-            if (model != null)
-                return new ViewAsPdf(model)
-                {
-                    PageSize = Rotativa.AspNetCore.Options.Size.A4,
-                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait
-                };
-            else
+            var paper = _dbContext.ExercisePaper.FirstOrDefault(p => p.ExercisePaperId == id);
+            if (paper == null)
             {
                 TempData["Msg"] = "Paper not found!";
                 return RedirectToAction("Index");
             }
 
+            var paperQuestionsIds = _dbContext.OExPaperList
+                .Where(p => p.ExercisePaperId == id)
+                .Select(p => p.OEQuestionId)
+                .ToList();
+
+            var questions = _dbContext.OEQuestionsPaper
+                .Where(q => paperQuestionsIds.Contains(q.Id))
+                .ToList();
+
+            var viewModel = new PrintPaperViewModel
+            {
+                PaperName = paper.Name,
+                Questions = questions
+            };
+
+            return new ViewAsPdf(viewModel)
+            {
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait
+            };
         }
 
         [Authorize(Roles = "Lecturer,Admin")]

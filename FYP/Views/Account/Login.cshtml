@@ -3,35 +3,37 @@
     string msg = ViewData["Message"] as string;
 }
 
-<form class="form-horizontal" method="post">
-    @if (ViewData["Message"] != null)
-    {
-        <div class="form-group row">
-            <div class="alert alert-@ViewData["MsgType"]">
-                <text>@ViewData["Message"]</text>
-            </div>
+<div class="login-container d-flex justify-content-center align-items-center">
+    <div class="login-card shadow-lg">
+        <div class="text-center mb-4">
+            <img src="~/images/fake_logo.png" alt="Logo" class="login-logo mb-2">
+            <h2 class="fw-bold text-primary">Welcome Back</h2>
+            <p class="text-muted">Please sign in to continue</p>
         </div>
-    }
-    <br /><br /><br />
-    <h2 class="offset-4 col-5-text-left form-signin-heading">Login</h2>
 
-    <div class="offset-4 col-5">
-        <div class="form-group row">
-            <label asp-for="UserId" class="control-label" style="font-family:'HP Simplified'">User ID :</label>
-            <input asp-for="UserId" class="form-control" style="font-family:'HP Simplified'" placeholder="Your registered user id" />
-            <div class="col-3">
-                <span asp-validation-for="UserId" class="text-danger"></span>
+        @if (ViewData["Message"] != null)
+        {
+            <div class="alert alert-@ViewData["MsgType"] text-center" role="alert">
+                @ViewData["Message"]
             </div>
-        </div>
-        <div class="form-group row">
-            <label asp-for="Password" class="control-label" style="font-family:'HP Simplified'">Password :</label>
-            <input asp-for="Password" class="form-control" style="font-family:'HP Simplified'" placeholder="Password" />
-            <div class="col-3">
-                <span asp-validation-for="Password" class="text-danger"></span>
+        }
+
+        <form method="post" class="needs-validation" novalidate>
+            <div class="form-group mb-3">
+                <label asp-for="UserId" class="form-label">User ID</label>
+                <input asp-for="UserId" class="form-control" placeholder="Your registered user ID" />
+                <span asp-validation-for="UserId" class="text-danger small"></span>
             </div>
-        </div>
-        <div class="form-group row">
-            <input type="submit" class="btn btn-lg btn-primary btn-block" value="Sign In" />
-        </div>
+
+            <div class="form-group mb-4">
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" class="form-control" type="password" placeholder="Password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                Sign In
+            </button>
+        </form>
     </div>
-</form>
+</div>

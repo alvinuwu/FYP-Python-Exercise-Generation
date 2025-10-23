@@ -1,0 +1,235 @@
+﻿/* =========================================================
+   Modern Educational Theme for ASP.NET Layout
+   ========================================================= */
+
+:root {
+    --sidebar-bg: #487ff7; /* Deep educational blue */
+    --sidebar-hover: #92b2f7; /* Lighter hover blue */
+    --sidebar-text: #ffffff;
+    --content-bg: #f8fafc; /* Subtle off-white */
+    --card-bg: #ffffff;
+    --accent: #0ea5e9; /* Light blue accent */
+    --font-main: "Segoe UI", "Open Sans", sans-serif;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--content-bg);
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+/* === LAYOUT === */
+.row {
+    margin: 0;
+}
+
+.col-2 {
+    padding: 0;
+}
+
+/* === SIDEBAR === */
+.sidebar {
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1rem;
+    position: fixed;
+    width: 220px;
+    top: 0;
+    left: 0;
+}
+
+    .sidebar img {
+        width: 80%;
+        margin-bottom: 1rem;
+    }
+
+    .sidebar nav {
+        width: 100%;
+    }
+
+    .sidebar .nav {
+        flex-direction: column;
+        width: 100%;
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .sidebar .nav-item {
+        width: 100%;
+    }
+
+    .sidebar .nav-link,
+    .sidebar .dropbtn {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        color: var(--sidebar-text);
+        text-decoration: none;
+        font-weight: 500;
+        border: none;
+        background: transparent;
+        text-align: left;
+        transition: background-color 0.2s ease;
+    }
+
+        .sidebar .nav-link:hover,
+        .sidebar .dropbtn:hover {
+            background-color: var(--sidebar-hover);
+        }
+
+/* === DROPDOWN === */
+.dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-content {
+    display: none;
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 6px;
+    margin-left: 10px;
+    margin-right: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+    .dropdown-content a {
+        color: #1e293b;
+        padding: 10px 16px;
+        display: block;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+    }
+
+        .dropdown-content a:hover {
+            background-color: #f1f5f9;
+        }
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* === MAIN CONTENT AREA === */
+.main-content {
+    margin-left: 220px;
+    padding: 2rem;
+    background-color: var(--content-bg);
+    min-height: 100vh;
+}
+
+    .main-content h1,
+    .main-content h2,
+    .main-content h3 {
+        color: #1e3a8a;
+    }
+
+/* === CARD STYLE (for inner content) === */
+.content-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+}
+
+/* === BUTTONS === */
+button, .btn {
+    border-radius: 8px !important;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+    .btn-primary:hover {
+        background-color: #0284c7;
+        border-color: #0284c7;
+    }
+
+/* === RESPONSIVE === */
+@media (max-width: 992px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+}
+
+
+.dropdown-content a {
+    color: #1e293b !important; /* dark gray text for readability */
+    background-color: #ffffff;
+    text-decoration: none;
+}
+
+/* ==========================================
+   LOGIN PAGE STYLING
+   ========================================== */
+.login-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    padding: 2rem;
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 2.5rem 3rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.login-logo {
+    width: 70px;
+    height: auto;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+}
+
+.form-label {
+    font-weight: 600;
+    color: #1e3a8a;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.25);
+    }
+
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #2563eb;
+        border-color: #2563eb;
+        transform: translateY(-1px);
+    }
+
+.text-muted {
+    font-size: 0.9rem;
+}

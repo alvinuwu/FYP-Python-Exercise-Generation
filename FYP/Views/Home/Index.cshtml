@@ -1,66 +1,53 @@
-
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
-<div id="tab" class="tab-pane">
-    <div class="panel-body">
-        <div class="accordion" style="padding: 20px">
-            @if (User.IsInRole("Admin"))
-            {
-                <h2>
-                    Hello, Admin @User.Identity.Name
-                </h2>
-            }
-            else if (User.IsInRole("Lecturer"))
-            {
-                <h2>
-                    Hello, Lecturer @User.Identity.Name
-                </h2>
-            }
-            else if (User.IsInRole("Student"))
-            {
-                <h2>
-                    Hello, Student @User.Identity.Name
-                </h2>
-            }
-        </div>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        @if (User.IsInRole("Admin"))
+        {
+            <h2 class="fw-bold text-primary">Hello, Admin @User.Identity.Name 👋</h2>
+        }
+        else if (User.IsInRole("Lecturer"))
+        {
+            <h2 class="fw-bold text-primary">Hello, Lecturer @User.Identity.Name 👋</h2>
+        }
+        else if (User.IsInRole("Student"))
+        {
+            <h2 class="fw-bold text-primary">Hello, Student @User.Identity.Name 👋</h2>
+        }
     </div>
-    <br />
-    <br />
-    @if (User.IsInRole("Admin") || User.IsInRole("Lecturer"))
-    {
-        <div>
-            <a class="btn btn-default offset-1" style="background-color:dodgerblue; color:white; width: 300px; height: 75px; font-size: 30px" asp-controller="ExercisePaper" asp-action="Create"><i class="glyphicon glyphicon-file"></i> Generate Paper</a> <br /><br />
-            <a class="btn btn-default offset-1" style="background-color:deepskyblue; color:white; width: 300px; height: 75px; font-size: 30px" asp-controller="ExercisePaper" asp-action="PaperList"><i class="glyphicon glyphicon-user"></i> Grade Students</a>
-        </div>
-    }
-    @if (User.IsInRole("Student"))
-    {
-<div>
-    <a class="btn btn-default offset-1" style="background-color:dodgerblue; color:white; width: 350px; height: 75px; font-size: 30px" asp-controller="ExercisePaper" asp-action="ViewOEPapers"><i class="glyphicon glyphicon-file"></i> View Exercise Papers</a> <br /><br />
-    <a class="btn btn-default offset-1" style="background-color:dodgerblue; color:white; width: 350px; height: 75px; font-size: 30px" asp-controller="ExercisePaper" asp-action="GenerateReport" target="_blank"><i class="glyphicon glyphicon-print"></i> Print Summary Report</a>
-    
-</div>
 
-    }
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
+    <div class="d-flex flex-column align-items-center gap-4">
+        @if (User.IsInRole("Admin") || User.IsInRole("Lecturer"))
+        {
+            <a class="btn btn-lg text-white shadow-lg w-50"
+               style="background: linear-gradient(135deg, #60a5fa, #2563eb); font-size: 1.4rem;"
+               asp-controller="ExercisePaper" asp-action="Create">
+                <i class="glyphicon glyphicon-file"></i> Generate Paper
+            </a>
+            <br />
+            <a class="btn btn-lg text-white shadow-lg w-50"
+               style="background: linear-gradient(135deg, #93c5fd, #3b82f6); font-size: 1.4rem;"
+               asp-controller="ExercisePaper" asp-action="PaperList">
+                <i class="glyphicon glyphicon-user"></i> Grade Students
+            </a>
+        }
+
+        @if (User.IsInRole("Student"))
+        {
+            <a class="btn btn-lg text-white shadow-lg w-50"
+               style="background: linear-gradient(135deg, #93c5fd, #3b82f6); font-size: 1.4rem;"
+               asp-controller="ExercisePaper" asp-action="ViewOEPapers">
+                <i class="glyphicon glyphicon-file"></i> View Exercise Papers
+            </a>
+            <br />
+            <a class="btn btn-lg text-white shadow-lg w-50"
+               style="background: linear-gradient(135deg, #bfdbfe, #60a5fa); font-size: 1.4rem;"
+               asp-controller="ExercisePaper" asp-action="GenerateReport" target="_blank">
+                <i class="glyphicon glyphicon-print"></i> Print Summary Report
+            </a>
+        }
+    </div>
 </div>

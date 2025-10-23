@@ -1,195 +1,136 @@
 ﻿@model List<OEQuestions>
-@{
-    ViewBag.Title = "Exercise Papers";
-}
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<html>
-<head>
 
-</head>
-<body>
-    <div id="tab" class="tab-pane">
-        <div class="panel-body">
-            <div style="padding: 20px">
-                <h2>Open-Ended Questions List</h2>
-                <br />
-                <br />
-                @if (TempData["Msg"] != null)
-                {
-                    <div class="form-group row">
-                        <div class="col">
-                            <div class="alert alert-@TempData["MsgType"]">
-                                <text><b>@Html.Raw(TempData["Msg"])</b></text>
-                            </div>
-                        </div>
-                    </div>
-                }
-                <label class="control-label col-2 text-left"><b>Topic : </b></label>
-                <div class="col-6">
-                    <select id="topics" class="form-control col-6" style="font-family: 'HP Simplified'"
-                            asp-items="@((SelectList)ViewData["topics"])">
-                        <option id="0">All Topics</option>
-                    </select>
-                </div>
-                <br />
-                <br />
-                <table id="exercisePaperTable" class="table table-bordered table-condensed table-hover table-striped">
-                    <thead>
-                        <tr style="background-color:darkblue">
-                            <th scope="col" width="2%" style="color:white">#</th>
-                            <th scope="col" width="5%" style="color:white">Topic</th>
-                            <th scope="col" width="15%" style="color:white">Figure</th>
-                            <th scope="col" width="15%" style="color:white">Question</th>
-                            <th scope="col" width="10%" style="color:white">Answer</th>
-                            <th scope="col" width="3%" style="color:white">Max. Use</th>
-                            <th scope="col" width="3%" style="color:white">Difficulty</th>
-                            <th scope="col" width="7%" style="color:white"><p align="center">Action</p></th>
-                        </tr>
-                    </thead>
-                    <tbody id="divQuestion">
-                        @*AJAX*@                    
-                        @if (Model != null)
-                        {
-                            int count = 1;
-                            @foreach (var item in Model)
-                            {
-                        <tr>
-                            <td>
-                                @count
-                            </td>
-                            <td>
-                                @item.Topic
-                            </td>
-                            <td>
-                                @{
-                                    if (item.Figure.Contains("[nline]"))
-                                    {
-                                        var split = item.Figure.Split("[nline]");
-                                        int counter = 0;
-                                        foreach (var i in split)
-                                        {
-                                            @split[counter]<br />
-                                            counter++;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        @item.Figure
-                                    }
-                                }
-                            </td>
-                            <td>
-                                @{
-                                    if (item.Question.Contains("[nline]"))
-                                    {
-                                        var split = item.Question.Split("[nline]");
-                                        int counter = 0;
-                                        foreach (var i in split)
-                                        {
-                                            @split[counter]<br />
-                                            counter++;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        @item.Question
-                                    }
-                                }
-                            </td>
-                            <td>
-                                @{
-                                    if (item.Answer.Contains("[nline]"))
-                                    {
-                                        var split = item.Question.Split("[nline]");
-                                        int counter = 0;
-                                        foreach (var i in split)
-                                        {
-                                            @split[counter]<br />
-                                            counter++;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        @item.Answer
-                                    }
-                                }
-                            </td>
-                            <td align="center">
-                                @{
-                                    if (item.UseCount == null)
-                                    {
-                                        <text><b style="font-size: 20px">&infin;</b></text>
-                                    }
-                                    else
-                                    {
-                                        <text>@item.UseCount</text>
-                                    }
-                                }
-                            </td>
-                            <td align="center">
-                                @item.Difficulty
-                            </td>
-                            <td align="center">
-                                <a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" asp-controller="ExercisePaper" asp-action="EditOEQuestions" asp-route-id="@item.Id">&#9998;</a>  <br /><br />
-                                <a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" asp-controller="ExercisePaper" asp-action="DeleteOEQuestions" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
-                                count++;
-                            }
-                        }
-                    </tbody>
+<div class="container py-5">
 
-                </table>
-                <br /><br /><br />
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold text-primary">Open-Ended Questions</h1>
+        <a class="btn btn-primary btn-lg" asp-action="GenerateOE" asp-controller="ExercisePaper">
+            <i class="glyphicon glyphicon-plus"></i> Add Question
+        </a>
+    </div>
+
+    <!-- TempData Message -->
+    @if (TempData["Msg"] != null)
+    {
+        <div class="alert alert-@TempData["MsgType"] alert-dismissible fade show" role="alert">
+            <strong>@Html.Raw(TempData["Msg"])</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Topic Selector -->
+    <div class="card shadow-sm p-4 mb-4">
+        <div class="row align-items-center">
+            <label class="col-sm-2 col-form-label fw-semibold">Topic:</label>
+            <div class="col-sm-6">
+                <select id="topics" class="form-control">
+                    <option value="0">All Topics</option>
+                    @foreach (var topic in (SelectList)ViewData["topics"])
+                    {
+                        <option value="@topic.Value">@topic.Text</option>
+                    }
+                </select>
             </div>
         </div>
     </div>
-</body>
-</html>
 
-<style>
-</style>
+    <!-- Questions Table -->
+    <div class="card shadow-sm p-4">
+        <div class="table-responsive">
+            <table id="exercisePaperTable" class="table table-striped table-hover table-bordered align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>#</th>
+                        <th>Topic</th>
+                        <th>Figure</th>
+                        <th>Question</th>
+                        <th>Answer</th>
+                        <th>Max Use</th>
+                        <th>Difficulty</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="divQuestion">
+                    @if (Model != null && Model.Any())
+                    {
+                        int count = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@count</td>
+                                <td>@item.Topic</td>
+                                <td>@Html.Raw(item.Figure.Replace("[nline]", "<br />"))</td>
+                                <td>@Html.Raw(item.Question.Replace("[nline]", "<br />"))</td>
+                                <td>@Html.Raw(item.Answer.Replace("[nline]", "<br />"))</td>
+                                <td class="text-center">
+                                    @if (item.UseCount == null)
+                                    {
+                                        <b style="font-size:20px">&infin;</b>
+                                    }
+                                    else
+                                    {
+                                        @item.UseCount
+                                    }
+                                </td>
+                                <td class="text-center">@item.Difficulty</td>
+                                <td class="text-center">
+                                    <a class="btn btn-success mb-2" style="transform: scaleX(-1);" asp-controller="ExercisePaper" asp-action="EditOEQuestions" asp-route-id="@item.Id">&#9998;</a>
+                                    <a class="btn btn-danger" onclick="return ConfirmDelete()" asp-controller="ExercisePaper" asp-action="DeleteOEQuestions" asp-route-id="@item.Id">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            count++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">No questions available</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-<script>
-    function ConfirmDelete() {
-        if (confirm("Are you sure you want to delete?") == false) {
-            event.preventDefault();
-            event.stopPropagation();
-            return false;
+@section MoreScripts {
+    <script>
+        function ConfirmDelete() {
+            return confirm("Are you sure you want to delete?");
         }
-    }
 
-    $(document).ready(function () {
-
-        $("#topics").change(ajaxLoadQuestion);
-    });
-
-
-
-    function ajaxLoadQuestion() {
-        var topic = $("#topics").val();
-        var apiUrl = "/api/OEQuestion/2/" + topic;
-        var divQuestion = $("#divQuestion");
-
-        divQuestion.html("");
-
-        $.getJSON(apiUrl, function (result) {
-            $.each(result, function (i, question) {
-                divQuestion.append(
-                    "<tr><td>" + (i + 1) +
-                    "</td><td>" + question.topic +
-                    "</td><td>" + question.figure +
-                    "</td><td>" + question.question +
-                    "</td><td>" + question.answer +
-                    '</td><td align="center">' + (question.useCount == null ? '<text><b style="font-size: 20px">&infin;</b></text>' : question.useCount) +
-                    "</td><td>" + question.difficulty +
-                    '</td><td align="center">' +
-                    '<a class="btn btn-default" style="background-color:darkseagreen; color:white; transform: scaleX(-1);" href="/ExercisePaper/EditOEQuestions/' + question.id + '">&#9998;</a>' + " " +
-                    '<a onclick="return ConfirmDelete()" class="btn btn-default" style="background-color:salmon; color:white" href="/ExercisePaper/DeleteOEQuestions/"' + question.id + '"><i class="fa fa-trash"></i></a>' +
-                    "</td></tr>"
-                );
-            });
+        $(document).ready(function () {
+            $("#topics").change(ajaxLoadQuestion);
         });
-    }
-</script>
+
+        function ajaxLoadQuestion() {
+            var topic = $("#topics").val();
+            var apiUrl = "/api/OEQuestion/2/" + topic;
+            var divQuestion = $("#divQuestion");
+            divQuestion.html("");
+
+            $.getJSON(apiUrl, function (result) {
+                $.each(result, function (i, question) {
+                    divQuestion.append(
+                        "<tr>" +
+                        "<td>" + (i + 1) + "</td>" +
+                        "<td>" + question.topic + "</td>" +
+                        "<td>" + question.figure.replace(/\[nline\]/g, "<br />") + "</td>" +
+                        "<td>" + question.question.replace(/\[nline\]/g, "<br />") + "</td>" +
+                        "<td>" + question.answer.replace(/\[nline\]/g, "<br />") + "</td>" +
+                        "<td class='text-center'>" + (question.useCount == null ? '<b style=\"font-size:20px\">&infin;</b>' : question.useCount) + "</td>" +
+                        "<td class='text-center'>" + question.difficulty + "</td>" +
+                        "<td class='text-center'>" +
+                        "<a class='btn btn-success mb-2' style='transform: scaleX(-1);' href='/ExercisePaper/EditOEQuestions/" + question.id + "'>&#9998;</a>" +
+                        "<a class='btn btn-danger' onclick='return ConfirmDelete()' href='/ExercisePaper/DeleteOEQuestions/" + question.id + "'><i class='fa fa-trash'></i></a>" +
+                        "</td>" +
+                        "</tr>"
+                    );
+                });
+            });
+        }
+    </script>
+}
